@@ -42,10 +42,8 @@
 <style>
   .voorna {
     position: relative;
-    border-radius: var(--radius);
     overflow: hidden;
-    border: 1px solid var(--line);
-    box-shadow: 0 20px 45px -25px rgb(43 36 32 / 0.35);
+    border: 3px solid var(--ink);
     user-select: none;
   }
 
@@ -65,10 +63,13 @@
     position: absolute;
     inset-block: 0;
     left: var(--pos);
-    width: 3px;
-    margin-left: -1.5px;
-    background: #fff;
-    box-shadow: 0 0 10px rgb(0 0 0 / 0.35);
+    width: 6px;
+    margin-left: -3px;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--accent) 0 8px,
+      var(--ink) 8px 16px
+    );
   }
 
   .handle {
@@ -78,35 +79,33 @@
     translate: -50% -50%;
     width: 2.7rem;
     height: 2.7rem;
-    border-radius: 50%;
-    background: #fff;
-    color: var(--accent);
+    background: var(--ink);
+    color: var(--paper);
+    border: 2px solid var(--paper);
     display: grid;
     place-items: center;
-    box-shadow: 0 4px 14px rgb(0 0 0 / 0.3);
   }
 
   .chip {
     position: absolute;
-    top: 1rem;
-    padding: 0.25rem 0.8rem;
-    border-radius: 999px;
-    font-size: 0.8rem;
+    top: 0;
+    padding: 0.3rem 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #fff;
-    background: rgb(43 36 32 / 0.65);
-    backdrop-filter: blur(4px);
+    color: var(--paper);
+    background: var(--ink);
     pointer-events: none;
   }
 
   .chip-voor {
-    left: 1rem;
+    left: 0;
   }
 
   .chip-na {
-    right: 1rem;
+    right: 0;
     background: var(--accent);
   }
 

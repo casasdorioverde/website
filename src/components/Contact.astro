@@ -2,16 +2,17 @@
 import { PHONE, PHONE_HREF, EMAIL, REGION } from '../consts';
 ---
 
-<section id="contact" class="section section-alt">
+<section id="contact" class="section section-deep">
   <div class="container grid">
     <div>
-      <span class="kicker">Contact</span>
-      <h2>Plannen? Bel of mail Brecht</h2>
+      <span class="kicker">Werf 05 — Contact</span>
+      <h2>Plannen? <span class="accent">Bel Brecht.</span></h2>
       <p class="lead">
         Vertel kort wat u wilt verbouwen en Brecht komt gratis en vrijblijvend
         langs. Binnen de week hebt u een duidelijke offerte — zonder kleine
         lettertjes.
       </p>
+      <a href={PHONE_HREF} class="btn btn-primary big">{PHONE}</a>
     </div>
     <ul class="details">
       <li>
@@ -42,35 +43,56 @@ import { PHONE, PHONE_HREF, EMAIL, REGION } from '../consts';
     align-items: center;
   }
 
+  .accent {
+    color: var(--accent);
+  }
+
+  .big {
+    font-size: 1.05rem;
+    padding: 1.1rem 2.2rem;
+    margin-top: 0.5rem;
+  }
+
   .details {
     list-style: none;
     margin: 0;
     padding: 1.8rem 2rem;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
+    background: var(--bg);
+    background-image: var(--noise);
+    border: 3px solid var(--ink);
     display: grid;
-    gap: 1.1rem;
+    gap: 1.2rem;
   }
 
   .details li {
     display: grid;
+    border-bottom: 1px solid var(--mortar);
+    padding-bottom: 1rem;
+  }
+
+  .details li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
   }
 
   .label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--ink-soft);
+    color: var(--steel);
+    margin-bottom: 0.2rem;
   }
 
   .details a {
-    font-weight: 600;
+    font-weight: 700;
+    color: var(--ink);
     text-decoration: none;
   }
 
   .details a:hover {
+    color: var(--accent-dark);
     text-decoration: underline;
   }
 

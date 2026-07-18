@@ -1,11 +1,18 @@
 ---
-import { TAGLINE, REGION } from '../consts';
+import { REGION } from '../consts';
 ---
 
 <section id="top" class="hero">
   <div class="container">
-    <span class="kicker">Renovaties &amp; verbouwingen — {REGION}</span>
-    <h1>{TAGLINE}.</h1>
+    <p class="sign" aria-hidden="true">
+      WERF 001 — RENOVATIES &amp; VERBOUWINGEN — {REGION.toUpperCase()}
+    </p>
+    <h1>
+      Vakmanschap<br />
+      waar u op<br />
+      <span class="accent">kunt bouwen.</span>
+    </h1>
+    <div class="hazard stripe" aria-hidden="true"></div>
     <p class="lead">
       Al meer dan vijftien jaar renoveert Brecht appartementen en woningen, van
       de eerste afbraak tot de laatste plint. Eerlijk advies, harde inzet en een
@@ -16,36 +23,58 @@ import { TAGLINE, REGION } from '../consts';
       <a href="#realisaties" class="btn btn-ghost">Bekijk realisaties</a>
     </div>
   </div>
+  <span class="watermark" aria-hidden="true">B</span>
 </section>
 
 <style>
   .hero {
-    padding-block: clamp(4.5rem, 11vw, 8.5rem);
-    background:
-      radial-gradient(
-        ellipse 60% 80% at 85% 20%,
-        var(--accent-soft) 0%,
-        transparent 70%
-      ),
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px),
-      var(--bg);
-    background-size:
-      auto,
-      3.5rem 3.5rem,
-      3.5rem 3.5rem,
-      auto;
-    background-blend-mode: normal, soft-light, soft-light, normal;
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(4rem, 10vw, 7.5rem);
+    border-bottom: 3px solid var(--ink);
   }
 
-  .hero h1 {
-    max-width: 15em;
+  .sign {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--steel);
+    border: 1px solid var(--mortar);
+    display: inline-block;
+    padding: 0.45rem 0.9rem;
+    margin: 0 0 2rem;
+    background: var(--bg-deep);
+  }
+
+  .hero h1 .accent {
+    color: var(--accent);
+  }
+
+  .stripe {
+    width: min(22rem, 60%);
+    margin-block: 1.8rem 2rem;
   }
 
   .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.9rem;
-    margin-top: 2rem;
+    gap: 1rem;
+    margin-top: 2.2rem;
+  }
+
+  .watermark {
+    position: absolute;
+    right: -0.06em;
+    bottom: -0.28em;
+    font-family: var(--font-display);
+    font-variation-settings: 'wdth' 125;
+    font-weight: 900;
+    font-size: clamp(16rem, 34vw, 30rem);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--mortar);
+    pointer-events: none;
+    user-select: none;
   }
 </style>

@@ -27,63 +27,85 @@ const diensten = [
 ];
 ---
 
-<section id="diensten" class="section section-alt">
+<section id="diensten" class="section section-deep">
   <div class="container">
-    <span class="kicker">Diensten</span>
+    <span class="kicker">Werf 02 — Diensten</span>
     <h2>Wat Brecht voor u doet</h2>
     <p class="lead">
       Elke verbouwing is anders, maar de aanpak is altijd dezelfde: eerst goed
       luisteren, dan een duidelijk plan, en pas stoppen als alles klopt.
     </p>
-    <ul class="cards">
+    <ol class="spec">
       {
-        diensten.map((dienst) => (
+        diensten.map((dienst, i) => (
           <li>
+            <span class="num" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
             <h3>{dienst.title}</h3>
             <p>{dienst.text}</p>
           </li>
         ))
       }
-    </ul>
+    </ol>
   </div>
 </section>
 
 <style>
-  .cards {
+  .spec {
     list-style: none;
-    margin: 2.5rem 0 0;
+    margin: 3rem 0 0;
     padding: 0;
+    border-top: 3px solid var(--ink);
+  }
+
+  .spec li {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.2rem;
+    grid-template-columns: 4.5rem 1fr 1.4fr;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding: 1.4rem 0.8rem;
+    border-bottom: 1px solid var(--mortar);
+    transition: background-color 0.15s ease;
   }
 
-  .cards li {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 1.6rem;
+  .spec li:last-child {
+    border-bottom: 3px solid var(--ink);
   }
 
-  .cards h3 {
-    margin-bottom: 0.4em;
+  .spec li:hover {
+    background: var(--ink);
+    color: var(--paper);
   }
 
-  .cards p {
+  .spec li:hover p {
+    color: var(--mortar);
+  }
+
+  .num {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .spec h3 {
     margin: 0;
-    color: var(--ink-soft);
+  }
+
+  .spec p {
+    margin: 0;
+    color: var(--steel);
     font-size: 0.98rem;
   }
 
-  @media (max-width: 900px) {
-    .cards {
-      grid-template-columns: repeat(2, 1fr);
+  @media (max-width: 760px) {
+    .spec li {
+      grid-template-columns: 3rem 1fr;
     }
-  }
 
-  @media (max-width: 560px) {
-    .cards {
-      grid-template-columns: 1fr;
+    .spec p {
+      grid-column: 2;
     }
   }
 </style>

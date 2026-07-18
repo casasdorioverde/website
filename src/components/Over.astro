@@ -9,7 +9,7 @@ const stats = [
 <section id="over" class="section">
   <div class="container grid">
     <div>
-      <span class="kicker">Over Brecht</span>
+      <span class="kicker">Werf 01 — Over Brecht</span>
       <h2>Jarenlang ploegbaas, altijd vakman gebleven</h2>
       <p>
         Brecht leidde jarenlang een ploeg bouwvakkers en renoveerde in die tijd
@@ -71,7 +71,7 @@ const stats = [
     display: grid;
     grid-template-columns: 1.4fr 1fr;
     gap: clamp(2rem, 6vw, 5rem);
-    align-items: center;
+    align-items: start;
   }
 
   .stats {
@@ -79,25 +79,32 @@ const stats = [
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 1rem;
+    gap: 1.8rem;
   }
 
   .stats li {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 1.2rem 1.5rem;
+    border-top: 3px solid var(--ink);
+    padding-top: 0.8rem;
     display: grid;
   }
 
   .stats strong {
-    font-family: var(--font-heading);
-    font-size: 2rem;
+    font-family: var(--font-display);
+    font-variation-settings: 'wdth' 122;
+    font-weight: 800;
+    font-size: clamp(3rem, 6vw, 4.5rem);
+    line-height: 1;
     color: var(--accent);
   }
 
   .stats span {
-    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--steel);
+    margin-top: 0.5rem;
   }
 
   @media (max-width: 760px) {

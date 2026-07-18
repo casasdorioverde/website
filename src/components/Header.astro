@@ -15,7 +15,7 @@ const links = [
     <nav aria-label="Hoofdnavigatie">
       {links.map((link) => <a href={link.href}>{link.label}</a>)}
     </nav>
-    <a href={PHONE_HREF} class="btn btn-primary phone">{PHONE}</a>
+    <a href={PHONE_HREF} class="phone">{PHONE}</a>
   </div>
 </header>
 
@@ -24,23 +24,26 @@ const links = [
     position: sticky;
     top: 0;
     z-index: 10;
-    background: color-mix(in srgb, var(--bg) 88%, transparent);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--line);
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom: 3px solid var(--accent);
   }
 
   .inner {
     display: flex;
     align-items: center;
     gap: 2rem;
-    padding-block: 0.9rem;
+    padding-block: 0.85rem;
   }
 
   .logo {
-    font-family: var(--font-heading);
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--ink);
+    font-family: var(--font-display);
+    font-variation-settings: 'wdth' 122;
+    font-weight: 800;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--paper);
     text-decoration: none;
     margin-right: auto;
     white-space: nowrap;
@@ -48,23 +51,37 @@ const links = [
 
   nav {
     display: flex;
-    gap: 1.5rem;
+    gap: 1.6rem;
   }
 
   nav a {
-    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mortar);
     text-decoration: none;
-    font-weight: 500;
   }
 
   nav a:hover {
-    color: var(--accent);
+    color: var(--paper);
   }
 
   .phone {
-    padding: 0.55rem 1.2rem;
-    font-size: 0.95rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--paper);
+    text-decoration: none;
+    background: var(--accent);
+    padding: 0.5rem 1.1rem;
     white-space: nowrap;
+  }
+
+  .phone:hover {
+    background: var(--accent-dark);
   }
 
   @media (max-width: 760px) {

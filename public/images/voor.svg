@@ -1,22 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Kamer voor de renovatie">
-  <rect width="800" height="450" fill="#cfc7ba"/>
-  <rect y="330" width="800" height="120" fill="#a89a86"/>
-  <g stroke="#93866f" stroke-width="2">
+  <rect width="800" height="450" fill="#c7c3ba"/>
+  <rect y="330" width="800" height="120" fill="#9d988d"/>
+  <g stroke="#8a8478" stroke-width="2">
     <line x1="0" y1="360" x2="800" y2="360"/>
     <line x1="0" y1="395" x2="800" y2="395"/>
     <line x1="0" y1="425" x2="800" y2="425"/>
   </g>
-  <rect x="80" y="70" width="200" height="180" fill="#8fa3ad"/>
-  <rect x="80" y="70" width="200" height="180" fill="none" stroke="#7d7263" stroke-width="14"/>
-  <line x1="180" y1="70" x2="180" y2="250" stroke="#7d7263" stroke-width="8"/>
-  <line x1="80" y1="160" x2="280" y2="160" stroke="#7d7263" stroke-width="8"/>
-  <path d="M105 95 135 125 M240 90 215 115" stroke="#e8e2d6" stroke-width="4" opacity="0.6"/>
-  <path d="M430 40 q10 30 -6 60 q-14 26 4 58 q14 24 -4 52" fill="none" stroke="#9a8d78" stroke-width="3"/>
-  <path d="M560 0 q-8 40 10 70 M300 250 q30 -8 55 6" fill="none" stroke="#9a8d78" stroke-width="3"/>
-  <line x1="400" y1="0" x2="400" y2="120" stroke="#6f6455" stroke-width="3"/>
-  <circle cx="400" cy="132" r="14" fill="#e9dfa8" stroke="#6f6455" stroke-width="3"/>
-  <g fill="#b5a68e" stroke="#8c7f6a" stroke-width="3">
-    <rect x="560" y="230" width="150" height="100" rx="6"/>
+  <rect x="80" y="70" width="200" height="180" fill="#8b969a"/>
+  <rect x="80" y="70" width="200" height="180" fill="none" stroke="#6f6a5f" stroke-width="14"/>
+  <line x1="180" y1="70" x2="180" y2="250" stroke="#6f6a5f" stroke-width="8"/>
+  <line x1="80" y1="160" x2="280" y2="160" stroke="#6f6a5f" stroke-width="8"/>
+  <path d="M105 95 135 125 M240 90 215 115" stroke="#dedbd4" stroke-width="4" opacity="0.6"/>
+  <path d="M430 40 q10 30 -6 60 q-14 26 4 58 q14 24 -4 52" fill="none" stroke="#8f897c" stroke-width="3"/>
+  <path d="M560 0 q-8 40 10 70 M300 250 q30 -8 55 6" fill="none" stroke="#8f897c" stroke-width="3"/>
+  <line x1="400" y1="0" x2="400" y2="120" stroke="#5f5a50" stroke-width="3"/>
+  <circle cx="400" cy="132" r="14" fill="#ddd7c2" stroke="#5f5a50" stroke-width="3"/>
+  <g fill="#aba598" stroke="#7e7869" stroke-width="3">
+    <rect x="560" y="230" width="150" height="100" rx="0"/>
     <line x1="575" y1="230" x2="575" y2="330"/>
     <line x1="597" y1="230" x2="597" y2="330"/>
     <line x1="619" y1="230" x2="619" y2="330"/>
@@ -24,7 +24,7 @@
     <line x1="663" y1="230" x2="663" y2="330"/>
     <line x1="685" y1="230" x2="685" y2="330"/>
   </g>
-  <rect x="120" y="290" width="160" height="14" fill="#8c7f6a" transform="rotate(-4 200 297)"/>
-  <rect x="330" y="345" width="90" height="60" fill="#9a8d78" transform="rotate(6 375 375)"/>
-  <rect x="336" y="352" width="78" height="46" fill="#b5a68e" transform="rotate(6 375 375)"/>
+  <rect x="120" y="290" width="160" height="14" fill="#7e7869" transform="rotate(-4 200 297)"/>
+  <rect x="330" y="345" width="90" height="60" fill="#8f897c" transform="rotate(6 375 375)"/>
+  <rect x="336" y="352" width="78" height="46" fill="#aba598" transform="rotate(6 375 375)"/>
 </svg>

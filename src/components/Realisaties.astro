@@ -8,32 +8,36 @@ const projecten = [
     img: '/images/project-1.svg',
     alt: 'Illustratie van een gerenoveerde leefruimte',
     title: 'Totaalrenovatie appartement',
-    place: 'Gent — leefruimte, keuken en badkamer volledig vernieuwd',
+    place: 'Gent',
+    detail: 'Leefruimte, keuken en badkamer volledig vernieuwd',
   },
   {
     img: '/images/project-2.svg',
     alt: 'Illustratie van een gerenoveerde badkamer',
     title: 'Badkamer met inloopdouche',
-    place: 'Sint-Amandsberg — van gedateerd naar hedendaags in drie weken',
+    place: 'Sint-Amandsberg',
+    detail: 'Van gedateerd naar hedendaags in drie weken',
   },
   {
     img: '/images/project-3.svg',
     alt: 'Illustratie van een open keuken',
     title: 'Open keuken met eiland',
-    place: 'Ledeberg — dragende muur vervangen, keuken en vloer vernieuwd',
+    place: 'Ledeberg',
+    detail: 'Dragende muur vervangen, keuken en vloer vernieuwd',
   },
   {
     img: '/images/project-4.svg',
     alt: 'Illustratie van een appartementsgebouw',
     title: 'Opfrissing van zes flats',
-    place: 'Gentbrugge — gefaseerd gerenoveerd terwijl het gebouw bewoond bleef',
+    place: 'Gentbrugge',
+    detail: 'Gefaseerd gerenoveerd terwijl het gebouw bewoond bleef',
   },
 ];
 ---
 
 <section id="realisaties" class="section">
   <div class="container">
-    <span class="kicker">Realisaties</span>
+    <span class="kicker">Werf 03 — Realisaties</span>
     <h2>Recent werk</h2>
     <p class="lead">
       Een greep uit de projecten die Brecht en zijn ploeg de voorbije jaren
@@ -44,12 +48,15 @@ const projecten = [
     </div>
     <ul class="projects">
       {
-        projecten.map((project) => (
+        projecten.map((project, i) => (
           <li>
             <img src={project.img} alt={project.alt} loading="lazy" />
             <div class="caption">
+              <span class="tag">
+                Project {String(i + 1).padStart(2, '0')} — {project.place}
+              </span>
               <h3>{project.title}</h3>
-              <p>{project.place}</p>
+              <p>{project.detail}</p>
             </div>
           </li>
         ))
@@ -60,23 +67,23 @@ const projecten = [
 
 <style>
   .voorna-wrap {
-    margin-top: 2.5rem;
+    margin-top: 3rem;
   }
 
   .projects {
     list-style: none;
-    margin: 2.5rem 0 0;
-    padding: 0;
+    margin: 3px 0 0;
+    padding: 3px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    gap: 3px;
+    background: var(--ink);
+    border: 0;
   }
 
   .projects li {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    overflow: hidden;
+    background: var(--bg);
+    display: grid;
   }
 
   .projects img {
@@ -86,17 +93,28 @@ const projecten = [
   }
 
   .caption {
-    padding: 1.2rem 1.5rem 1.4rem;
+    padding: 1.2rem 1.4rem 1.5rem;
+  }
+
+  .tag {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
   }
 
   .caption h3 {
-    margin-bottom: 0.25em;
+    margin-bottom: 0.3em;
   }
 
   .caption p {
     margin: 0;
-    color: var(--ink-soft);
-    font-size: 0.98rem;
+    color: var(--steel);
+    font-size: 0.95rem;
   }
 
   @media (max-width: 700px) {
