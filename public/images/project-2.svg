@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Gerenoveerde badkamer met inloopdouche">
+  <rect width="800" height="450" fill="#eef0ee"/>
+  <g stroke="#d8dcd8" stroke-width="2">
+    <line x1="0" y1="90" x2="800" y2="90"/>
+    <line x1="0" y1="180" x2="800" y2="180"/>
+    <line x1="0" y1="270" x2="800" y2="270"/>
+    <line x1="200" y1="0" x2="200" y2="360"/>
+    <line x1="400" y1="0" x2="400" y2="360"/>
+    <line x1="600" y1="0" x2="600" y2="360"/>
+  </g>
+  <rect y="360" width="800" height="90" fill="#c9cfc9"/>
+  <rect x="470" y="40" width="10" height="320" fill="#9fb4bd" opacity="0.85"/>
+  <rect x="480" y="40" width="240" height="320" fill="#bcd6de" opacity="0.45"/>
+  <line x1="600" y1="60" x2="600" y2="120" stroke="#2b2420" stroke-width="5"/>
+  <path d="M600 120 h34" stroke="#2b2420" stroke-width="5"/>
+  <circle cx="640" cy="124" r="9" fill="#2b2420"/>
+  <g stroke="#8fa3ad" stroke-width="3" stroke-linecap="round">
+    <line x1="628" y1="142" x2="622" y2="170"/>
+    <line x1="642" y1="142" x2="640" y2="172"/>
+    <line x1="654" y1="142" x2="658" y2="168"/>
+  </g>
+  <rect x="80" y="250" width="220" height="26" rx="8" fill="#c98a5b"/>
+  <ellipse cx="190" cy="240" rx="52" ry="18" fill="#ffffff" stroke="#b9b2a6" stroke-width="3"/>
+  <line x1="190" y1="190" x2="190" y2="222" stroke="#2b2420" stroke-width="4"/>
+  <path d="M190 190 h-24" stroke="#2b2420" stroke-width="4"/>
+  <rect x="120" y="90" width="140" height="90" rx="8" fill="#bcd6de" stroke="#2b2420" stroke-width="4"/>
+  <path d="M330 340 q-20 -36 -2 -62" fill="none" stroke="#4a6b4f" stroke-width="6" stroke-linecap="round"/>
+  <rect x="314" y="340" width="36" height="30" rx="5" fill="#a44a24"/>
+</svg>

@@ -1,0 +1,81 @@
+---
+import { SITE_NAME, PHONE, PHONE_HREF } from '../consts';
+
+const links = [
+  { href: '#over', label: 'Over Brecht' },
+  { href: '#diensten', label: 'Diensten' },
+  { href: '#realisaties', label: 'Realisaties' },
+  { href: '#contact', label: 'Contact' },
+];
+---
+
+<header class="header">
+  <div class="container inner">
+    <a href="#top" class="logo">{SITE_NAME}</a>
+    <nav aria-label="Hoofdnavigatie">
+      {links.map((link) => <a href={link.href}>{link.label}</a>)}
+    </nav>
+    <a href={PHONE_HREF} class="btn btn-primary phone">{PHONE}</a>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .inner {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding-block: 0.9rem;
+  }
+
+  .logo {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    margin-right: auto;
+    white-space: nowrap;
+  }
+
+  nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  nav a:hover {
+    color: var(--accent);
+  }
+
+  .phone {
+    padding: 0.55rem 1.2rem;
+    font-size: 0.95rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 760px) {
+    nav {
+      display: none;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .phone {
+      display: none;
+    }
+  }
+</style>

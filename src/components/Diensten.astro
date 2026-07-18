@@ -1,0 +1,89 @@
+---
+const diensten = [
+  {
+    title: 'Totaalrenovatie van appartementen',
+    text: 'Van casco tot instapklaar: één plan, één planning en één verantwoordelijke voor het hele traject.',
+  },
+  {
+    title: 'Badkamerrenovatie',
+    text: 'Waterdicht, doordacht en netjes betegeld — badkamers die jaren meegaan.',
+  },
+  {
+    title: 'Keukenrenovatie',
+    text: 'Afbraak, leidingwerk, plaatsing en afwerking, afgestemd op hoe u echt kookt en leeft.',
+  },
+  {
+    title: 'Vloer- en tegelwerk',
+    text: 'Strak legwerk in elk formaat, met oog voor lijnen die kloppen tot in de hoeken.',
+  },
+  {
+    title: 'Gyproc en binnenafwerking',
+    text: 'Wanden, plafonds en plamuurwerk klaar om te schilderen — vlak is vlak.',
+  },
+  {
+    title: 'Coördinatie van de volledige werf',
+    text: 'Brecht stemt alle vakmensen op elkaar af, bewaakt timing en budget, en houdt u op de hoogte.',
+  },
+];
+---
+
+<section id="diensten" class="section section-alt">
+  <div class="container">
+    <span class="kicker">Diensten</span>
+    <h2>Wat Brecht voor u doet</h2>
+    <p class="lead">
+      Elke verbouwing is anders, maar de aanpak is altijd dezelfde: eerst goed
+      luisteren, dan een duidelijk plan, en pas stoppen als alles klopt.
+    </p>
+    <ul class="cards">
+      {
+        diensten.map((dienst) => (
+          <li>
+            <h3>{dienst.title}</h3>
+            <p>{dienst.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cards {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+  }
+
+  .cards li {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.6rem;
+  }
+
+  .cards h3 {
+    margin-bottom: 0.4em;
+  }
+
+  .cards p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+  }
+
+  @media (max-width: 900px) {
+    .cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,46 @@
+---
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import { SITE_NAME, TAGLINE, DESCRIPTION } from '../consts';
+---
+
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{SITE_NAME} — {TAGLINE}</title>
+    <meta name="description" content={DESCRIPTION} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:title" content={`${SITE_NAME} — ${TAGLINE}`} />
+    <meta property="og:description" content={DESCRIPTION} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="nl_BE" />
+  </head>
+  <body>
+    <slot />
+    <script>
+      // Secties glijden zachtjes in beeld tijdens het scrollen. De klasse wordt
+      // pas via JS gezet zodat de inhoud zonder JS gewoon zichtbaar blijft.
+      const targets = document.querySelectorAll('main section .container');
+      if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.12, rootMargin: '0px 0px -40px' }
+        );
+        for (const el of targets) {
+          el.classList.add('reveal');
+          observer.observe(el);
+        }
+      }
+    </script>
+  </body>
+</html>

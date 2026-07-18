@@ -1,0 +1,80 @@
+---
+const waarden = [
+  {
+    title: 'Hard werken',
+    text: 'Vroeg op de werf, laat naar huis als het moet. Deadlines zijn er om gehaald te worden.',
+  },
+  {
+    title: 'Integriteit',
+    text: 'Eerlijke prijzen, eerlijk advies. Wat beloofd is, wordt gedaan — ook als niemand kijkt.',
+  },
+  {
+    title: 'Jarenlange ervaring',
+    text: 'Meer dan vijftien jaar op de werf, waarvan jaren als ploegbaas. Weinig dat Brecht nog verrast.',
+  },
+  {
+    title: 'Eén aanspreekpunt',
+    text: 'U belt Brecht, en Brecht regelt het. Geen doorschuiven, geen smoesjes.',
+  },
+];
+---
+
+<section class="section section-dark">
+  <div class="container">
+    <span class="kicker">Waarom Brecht</span>
+    <h2>Waar u op mag rekenen</h2>
+    <ul class="values">
+      {
+        waarden.map((waarde) => (
+          <li>
+            <h3>{waarde.title}</h3>
+            <p>{waarde.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .section-dark {
+    background: var(--ink);
+    color: #f5efe7;
+  }
+
+  .section-dark .kicker {
+    color: #e0916b;
+  }
+
+  .values {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+
+  .values li {
+    border-top: 2px solid var(--accent);
+    padding-top: 1.1rem;
+  }
+
+  .values p {
+    margin: 0;
+    color: #c9beb2;
+    font-size: 0.98rem;
+  }
+
+  @media (max-width: 900px) {
+    .values {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .values {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

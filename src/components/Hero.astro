@@ -1,0 +1,51 @@
+---
+import { TAGLINE, REGION } from '../consts';
+---
+
+<section id="top" class="hero">
+  <div class="container">
+    <span class="kicker">Renovaties &amp; verbouwingen — {REGION}</span>
+    <h1>{TAGLINE}.</h1>
+    <p class="lead">
+      Al meer dan vijftien jaar renoveert Brecht appartementen en woningen, van
+      de eerste afbraak tot de laatste plint. Eerlijk advies, harde inzet en een
+      afwerking waar hij zelf achter staat — dat is de afspraak.
+    </p>
+    <div class="actions">
+      <a href="#contact" class="btn btn-primary">Vraag een offerte aan</a>
+      <a href="#realisaties" class="btn btn-ghost">Bekijk realisaties</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: clamp(4.5rem, 11vw, 8.5rem);
+    background:
+      radial-gradient(
+        ellipse 60% 80% at 85% 20%,
+        var(--accent-soft) 0%,
+        transparent 70%
+      ),
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px),
+      var(--bg);
+    background-size:
+      auto,
+      3.5rem 3.5rem,
+      3.5rem 3.5rem,
+      auto;
+    background-blend-mode: normal, soft-light, soft-light, normal;
+  }
+
+  .hero h1 {
+    max-width: 15em;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 2rem;
+  }
+</style>

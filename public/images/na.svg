@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Dezelfde kamer na de renovatie">
+  <rect width="800" height="450" fill="#f7f1e8"/>
+  <rect y="330" width="800" height="120" fill="#d9b088"/>
+  <g stroke="#c99e74" stroke-width="2">
+    <line x1="0" y1="360" x2="800" y2="360"/>
+    <line x1="0" y1="395" x2="800" y2="395"/>
+    <line x1="0" y1="425" x2="800" y2="425"/>
+  </g>
+  <rect x="70" y="60" width="220" height="200" fill="#bcd6de"/>
+  <rect x="70" y="60" width="220" height="200" fill="none" stroke="#2b2420" stroke-width="8"/>
+  <line x1="180" y1="60" x2="180" y2="260" stroke="#2b2420" stroke-width="4"/>
+  <path d="M90 235 q40 -35 80 -12 q35 20 100 -8" fill="none" stroke="#ffffff" stroke-width="5" opacity="0.7"/>
+  <line x1="400" y1="0" x2="400" y2="100" stroke="#2b2420" stroke-width="3"/>
+  <path d="M370 100 h60 l-10 40 h-40 Z" fill="#a44a24"/>
+  <g>
+    <rect x="530" y="240" width="200" height="60" rx="14" fill="#a44a24"/>
+    <rect x="540" y="210" width="180" height="44" rx="12" fill="#b85c33"/>
+    <rect x="530" y="296" width="16" height="34" fill="#2b2420"/>
+    <rect x="714" y="296" width="16" height="34" fill="#2b2420"/>
+  </g>
+  <g>
+    <rect x="330" y="290" width="46" height="40" rx="6" fill="#c98a5b"/>
+    <path d="M353 290 q-30 -50 -6 -85 M353 290 q28 -40 10 -78 M353 290 q2 -60 -28 -70" fill="none" stroke="#4a6b4f" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <rect x="120" y="292" width="150" height="10" rx="3" fill="#c98a5b"/>
+  <rect x="135" y="272" width="16" height="20" fill="#4a6b4f"/>
+  <rect x="165" y="266" width="12" height="26" fill="#a44a24"/>
+  <rect x="185" y="270" width="14" height="22" fill="#2b2420"/>
+</svg>

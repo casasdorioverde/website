@@ -1,0 +1,108 @@
+---
+const stats = [
+  { value: '15+', label: 'jaar ervaring' },
+  { value: '100+', label: 'gerenoveerde appartementen' },
+  { value: '1', label: 'aanspreekpunt, van start tot oplevering' },
+];
+---
+
+<section id="over" class="section">
+  <div class="container grid">
+    <div>
+      <span class="kicker">Over Brecht</span>
+      <h2>Jarenlang ploegbaas, altijd vakman gebleven</h2>
+      <p>
+        Brecht leidde jarenlang een ploeg bouwvakkers en renoveerde in die tijd
+        talloze appartementen. Hij kent elke fase van een verbouwing uit eigen
+        handen: afbraak, ruwbouw, technieken en afwerking. Die ervaring merkt u
+        op de werf — strak gepland, proper achtergelaten, en geen verrassingen
+        achteraf.
+      </p>
+      <p>
+        Wie met Brecht werkt, weet wat hij krijgt. Hij zegt eerlijk wat kan en
+        wat niet, rekent correct aan en is pas tevreden als het écht af is.
+        Afspraak is afspraak — zo simpel is het.
+      </p>
+    </div>
+    <ul class="stats">
+      {
+        stats.map((stat) => (
+          <li>
+            <strong>{stat.value}</strong>
+            <span>{stat.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<script>
+  // Cijfers tellen op zodra ze in beeld komen.
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const counters = document.querySelectorAll<HTMLElement>('.stats strong');
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        observer.unobserve(entry.target);
+        const el = entry.target as HTMLElement;
+        const value = parseInt(el.textContent ?? '', 10);
+        if (reduce || !Number.isFinite(value) || value < 2) continue;
+        const suffix = (el.textContent ?? '').replace(String(value), '');
+        const duration = 1300;
+        const start = performance.now();
+        const tick = (now: number) => {
+          const p = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = `${Math.round(value * eased)}${suffix}`;
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+    },
+    { threshold: 0.6 }
+  );
+  counters.forEach((el) => observer.observe(el));
+</script>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+
+  .stats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .stats li {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.5rem;
+    display: grid;
+  }
+
+  .stats strong {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--accent);
+  }
+
+  .stats span {
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 760px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

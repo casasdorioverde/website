@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Gerenoveerd appartementsgebouw">
+  <rect width="800" height="450" fill="#dce4e8"/>
+  <rect y="400" width="800" height="50" fill="#a89a86"/>
+  <rect x="240" y="60" width="320" height="340" fill="#f0e7d8" stroke="#2b2420" stroke-width="6"/>
+  <rect x="240" y="60" width="320" height="26" fill="#a44a24"/>
+  <g fill="#bcd6de" stroke="#2b2420" stroke-width="4">
+    <rect x="272" y="110" width="70" height="60"/>
+    <rect x="365" y="110" width="70" height="60"/>
+    <rect x="458" y="110" width="70" height="60"/>
+    <rect x="272" y="200" width="70" height="60"/>
+    <rect x="365" y="200" width="70" height="60"/>
+    <rect x="458" y="200" width="70" height="60"/>
+    <rect x="272" y="290" width="70" height="60"/>
+    <rect x="458" y="290" width="70" height="60"/>
+  </g>
+  <rect x="370" y="300" width="60" height="100" fill="#a44a24" stroke="#2b2420" stroke-width="4"/>
+  <circle cx="418" cy="352" r="4" fill="#2b2420"/>
+  <g stroke="#2b2420" stroke-width="3" fill="none">
+    <line x1="272" y1="140" x2="342" y2="140"/>
+    <line x1="365" y1="140" x2="435" y2="140"/>
+    <line x1="458" y1="140" x2="528" y2="140"/>
+  </g>
+  <rect x="120" y="300" width="70" height="100" fill="#c9bfae" stroke="#8c7f6a" stroke-width="4"/>
+  <rect x="620" y="320" width="80" height="80" fill="#c9bfae" stroke="#8c7f6a" stroke-width="4"/>
+  <path d="M96 400 q10 -36 30 -44 M700 400 q14 -30 34 -36" fill="none" stroke="#4a6b4f" stroke-width="6" stroke-linecap="round"/>
+</svg>

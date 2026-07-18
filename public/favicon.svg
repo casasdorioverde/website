@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <path d="M32 4 60 26v34H4V26Z" fill="#a44a24"/>
+  <path d="M32 12 52 28v26H12V28Z" fill="#faf7f2"/>
+  <text x="32" y="47" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="700" fill="#2b2420">B</text>
+</svg>

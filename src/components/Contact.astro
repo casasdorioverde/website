@@ -1,0 +1,82 @@
+---
+import { PHONE, PHONE_HREF, EMAIL, REGION } from '../consts';
+---
+
+<section id="contact" class="section section-alt">
+  <div class="container grid">
+    <div>
+      <span class="kicker">Contact</span>
+      <h2>Plannen? Bel of mail Brecht</h2>
+      <p class="lead">
+        Vertel kort wat u wilt verbouwen en Brecht komt gratis en vrijblijvend
+        langs. Binnen de week hebt u een duidelijke offerte — zonder kleine
+        lettertjes.
+      </p>
+    </div>
+    <ul class="details">
+      <li>
+        <span class="label">Telefoon</span>
+        <a href={PHONE_HREF}>{PHONE}</a>
+      </li>
+      <li>
+        <span class="label">E-mail</span>
+        <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+      </li>
+      <li>
+        <span class="label">Werkgebied</span>
+        <span>{REGION}</span>
+      </li>
+      <li>
+        <span class="label">Bereikbaar</span>
+        <span>ma–za, 7u tot 19u</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+
+  .details {
+    list-style: none;
+    margin: 0;
+    padding: 1.8rem 2rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .details li {
+    display: grid;
+  }
+
+  .label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .details a {
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .details a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 760px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
