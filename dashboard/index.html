@@ -98,16 +98,6 @@
     cursor: pointer;
   }
   .toolbar button:disabled { opacity: 0.6; cursor: wait; }
-  .toolbar input {
-    font: inherit;
-    font-size: 0.85rem;
-    padding: 0.45rem 0.7rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--panel);
-    color: var(--text);
-    min-width: 12rem;
-  }
   #trigger-status { font-size: 0.85rem; color: var(--muted); }
   #trigger-status.ok { color: var(--badge-available-fg); }
   #trigger-status.err { color: var(--badge-sold-out-fg); }
@@ -118,7 +108,6 @@
   <h1>Competitor pricing — Casas do Rio Verde</h1>
   <p class="subtitle" id="subtitle">Loading latest report…</p>
   <div class="toolbar">
-    <input type="password" id="trigger-secret" placeholder="Passphrase" autocomplete="off" />
     <button id="trigger-btn">Run report now</button>
     <span id="trigger-status"></span>
   </div>
@@ -221,24 +210,14 @@
   load();
 
   const triggerBtn = document.getElementById("trigger-btn");
-  const triggerSecret = document.getElementById("trigger-secret");
   const triggerStatus = document.getElementById("trigger-status");
 
   triggerBtn.addEventListener("click", async () => {
-    if (!triggerSecret.value) {
-      triggerStatus.textContent = "Enter the passphrase first.";
-      triggerStatus.className = "err";
-      return;
-    }
     triggerBtn.disabled = true;
     triggerStatus.textContent = "Triggering…";
     triggerStatus.className = "";
     try {
-      const res = await fetch("/api/trigger", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ secret: triggerSecret.value }),
-      });
+      const res = await fetch("/api/trigger", { method: "POST" });
       const data = await res.json();
       if (res.ok) {
         triggerStatus.textContent = data.message || "Workflow triggered.";

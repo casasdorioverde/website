@@ -1,12 +1,10 @@
 // Vercel serverless function that triggers the weekly report workflow on
 // GitHub Actions (workflow_dispatch). The GitHub token never reaches the
-// browser: it lives in a Vercel env var, and the button on the dashboard
-// must send the shared passphrase (TRIGGER_SECRET) to use this endpoint,
-// since the dashboard itself is publicly reachable.
+// browser: it lives in a Vercel env var. Note the endpoint is open -
+// anyone who finds the dashboard URL can start a workflow run.
 //
 // Required env vars on the Vercel project (Settings -> Environment Variables):
 //   GITHUB_DISPATCH_TOKEN - fine-grained PAT, "Actions: write" on the repo
-//   TRIGGER_SECRET        - passphrase you choose; typed into the dashboard
 // Optional:
 //   WORKFLOW_REPO - defaults to "casasdorioverde/website"
 //   WORKFLOW_REF  - branch containing the workflow file,
@@ -20,17 +18,12 @@ export default async function handler(req, res) {
   }
 
   const token = process.env.GITHUB_DISPATCH_TOKEN;
-  const secret = process.env.TRIGGER_SECRET;
-  if (!token || !secret) {
+  if (!token) {
     return res.status(503).json({
       error:
-        "Not configured yet: set GITHUB_DISPATCH_TOKEN and TRIGGER_SECRET " +
-        "in the Vercel project's environment variables.",
+        "Not configured yet: set GITHUB_DISPATCH_TOKEN in the Vercel " +
+        "project's environment variables.",
     });
-  }
-
-  if ((req.body && req.body.secret) !== secret) {
-    return res.status(401).json({ error: "Wrong passphrase" });
   }
 
   const repo = process.env.WORKFLOW_REPO || "casasdorioverde/website";
