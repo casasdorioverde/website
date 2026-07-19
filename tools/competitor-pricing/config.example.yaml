@@ -11,15 +11,19 @@ us:
 # Each competitor needs EITHER a booking_url (scraped automatically) OR an
 # airbnb_listing_id (fetched via the paid data provider below), or both.
 # rooms / has_pool are manual fallbacks used when the scraper/provider can't
-# confirm a value.
+# confirm a value. region is a free-text label (e.g. north/south/east/west,
+# or a town name) used only to group/sort the report - doesn't affect
+# scraping.
 competitors:
   - name: "Example Quinta"
     booking_url: "https://www.booking.com/hotel/pt/example-quinta.html"
+    region: north
     rooms: 8
     has_pool: true
 
   - name: "Example Airbnb Villa"
     airbnb_listing_id: "12345678"
+    region: south
     rooms: 4
     has_pool: false
 

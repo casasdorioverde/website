@@ -23,6 +23,7 @@ class CompetitorConfig:
     airbnb_listing_id: Optional[str] = None
     rooms: Optional[int] = None
     has_pool: Optional[bool] = None
+    region: Optional[str] = None
 
 
 @dataclass
@@ -97,6 +98,7 @@ def load_config(path: str | Path) -> Config:
                 airbnb_listing_id=c.get("airbnb_listing_id"),
                 rooms=c.get("rooms"),
                 has_pool=c.get("has_pool"),
+                region=c.get("region"),
             )
         )
 

@@ -93,6 +93,7 @@ def scrape_booking_listing(
     report = PropertyReport(
         name=competitor.name,
         source="booking",
+        region=competitor.region,
         url=competitor.booking_url,
         rooms=competitor.rooms,
         has_pool=competitor.has_pool,

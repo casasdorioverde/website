@@ -92,6 +92,7 @@
           <tr>
             <th>Property</th>
             <th>Source</th>
+            <th>Region</th>
             <th>Price / night</th>
             <th>vs. us</th>
             <th>Rooms</th>
@@ -165,6 +166,7 @@
       <tr class="${row.Source === "us" ? "us-row" : ""}">
         <td>${row.URL ? `<a href="${row.URL}" target="_blank" rel="noopener">${row.Name}</a>` : row.Name}</td>
         <td class="cell-muted">${row.Source}</td>
+        <td class="cell-muted">${row.Region || "—"}</td>
         <td>${fmtPrice(row)}</td>
         <td>${fmtDelta(row)}</td>
         <td>${row.Rooms ?? "—"}</td>

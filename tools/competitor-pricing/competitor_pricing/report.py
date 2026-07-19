@@ -18,6 +18,7 @@ def build_dataframe(reports: list[PropertyReport]) -> pd.DataFrame:
             {
                 "Name": r.name,
                 "Source": r.source,
+                "Region": r.region or "",
                 "Price/night": r.price_per_night,
                 "Currency": r.currency,
                 "vs. us (%)": vs_us_pct,
@@ -32,10 +33,13 @@ def build_dataframe(reports: list[PropertyReport]) -> pd.DataFrame:
         )
 
     df = pd.DataFrame(rows)
-    # Keep "us" first, then sort the rest by price ascending (unknown last).
+    # Keep "us" first, then group by region, then sort by price ascending
+    # within each region (unknown price last).
     df["_sort_key"] = df["Price/night"].fillna(float("inf"))
     df["_us_first"] = (df["Source"] != "us").astype(int)
-    df = df.sort_values(["_us_first", "_sort_key"]).drop(columns=["_sort_key", "_us_first"])
+    df = df.sort_values(["_us_first", "Region", "_sort_key"]).drop(
+        columns=["_sort_key", "_us_first"]
+    )
     return df.reset_index(drop=True)
 
 

@@ -39,6 +39,7 @@ def collect_reports(config) -> list[PropertyReport]:
             logger.info("Fetching Airbnb data for %s", competitor.name)
             airbnb_report = airbnb_provider.fetch(competitor.airbnb_listing_id)
             airbnb_report.name = competitor.name
+            airbnb_report.region = competitor.region
             airbnb_report.rooms = airbnb_report.rooms or competitor.rooms
             airbnb_report.has_pool = (
                 airbnb_report.has_pool
