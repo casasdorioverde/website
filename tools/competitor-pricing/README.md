@@ -2,7 +2,9 @@
 
 Weekly comparison of your B&B's price against nearby competitors: price per
 night, room count, whether they have a pool, review rating, and a best-effort
-occupancy signal. Emails you an HTML + CSV report.
+occupancy signal. Emails you an HTML + CSV report, and publishes the same
+data to a small dashboard at [`../../dashboard`](../../dashboard) (deployed
+to the Vercel project `calc`).
 
 ## How each source is handled
 
@@ -80,6 +82,9 @@ these repository secrets (Settings → Secrets and variables → Actions):
   email addresses)
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`
 - `AIRBNB_DATA_API_KEY` — only needed if you enable the Airbnb provider
+- `VERCEL_TOKEN` — a Vercel personal access token (vercel.com → Settings →
+  Tokens), used to redeploy the `dashboard/` directory to the `calc`
+  project after each run
 
 You can also trigger it manually from the Actions tab (`workflow_dispatch`).
 

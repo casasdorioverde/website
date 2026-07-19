@@ -45,3 +45,14 @@ def to_html(df: pd.DataFrame) -> str:
 
 def to_csv(df: pd.DataFrame) -> str:
     return df.to_csv(index=False)
+
+
+def to_json(df: pd.DataFrame) -> str:
+    import json
+    from datetime import datetime, timezone
+
+    payload = {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "rows": json.loads(df.to_json(orient="records")),
+    }
+    return json.dumps(payload, indent=2)

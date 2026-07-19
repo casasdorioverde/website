@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Casas do Rio Verde — Competitor Pricing</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f6f3;
+    --panel: #ffffff;
+    --text: #1c1b1a;
+    --muted: #6b6862;
+    --border: #e4e1da;
+    --accent: #2f6f4f;
+    --us-bg: #eaf3ec;
+    --badge-sold-out-bg: #fbe4e1; --badge-sold-out-fg: #9b2c1f;
+    --badge-limited-bg: #fbeed9; --badge-limited-fg: #93590d;
+    --badge-available-bg: #e4f2e8; --badge-available-fg: #256641;
+    --badge-unknown-bg: #eceae5; --badge-unknown-fg: #6b6862;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17181a;
+      --panel: #202225;
+      --text: #ecebe8;
+      --muted: #9a988f;
+      --border: #33352f;
+      --accent: #7fd1a6;
+      --us-bg: #1d2b23;
+      --badge-sold-out-bg: #3a1c19; --badge-sold-out-fg: #f2a79b;
+      --badge-limited-bg: #392c14; --badge-limited-fg: #e8c27e;
+      --badge-available-bg: #163425; --badge-available-fg: #8fdcb0;
+      --badge-unknown-bg: #2b2c28; --badge-unknown-fg: #9a988f;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 4rem;
+  }
+  h1 { font-size: 1.5rem; margin: 0 0 0.25rem; }
+  .subtitle { color: var(--muted); margin: 0 0 2rem; font-size: 0.95rem; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .table-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  tr:last-child td { border-bottom: none; }
+  tr.us-row td { background: var(--us-bg); font-weight: 600; }
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .badge-sold_out { background: var(--badge-sold-out-bg); color: var(--badge-sold-out-fg); }
+  .badge-limited { background: var(--badge-limited-bg); color: var(--badge-limited-fg); }
+  .badge-available { background: var(--badge-available-bg); color: var(--badge-available-fg); }
+  .badge-unknown, .badge-n_a { background: var(--badge-unknown-bg); color: var(--badge-unknown-fg); }
+  .empty-state {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--muted);
+  }
+  a { color: var(--accent); }
+  .cell-muted { color: var(--muted); }
+  footer { margin-top: 1.5rem; color: var(--muted); font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Competitor pricing — Casas do Rio Verde</h1>
+  <p class="subtitle" id="subtitle">Loading latest report…</p>
+  <div class="panel">
+    <div class="table-scroll">
+      <table id="report-table" hidden>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Source</th>
+            <th>Price / night</th>
+            <th>vs. us</th>
+            <th>Rooms</th>
+            <th>Pool</th>
+            <th>Rating</th>
+            <th>Occupancy</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="report-body"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="empty-state">No report has run yet.</div>
+  </div>
+  <footer>Data refreshes weekly from Booking.com listings and (optionally) a paid Airbnb data provider. Missing values mean the source didn't confirm that field.</footer>
+</main>
+<script>
+  function fmtPrice(row) {
+    if (row["Price/night"] === null || row["Price/night"] === undefined) return "—";
+    const currency = row["Currency"] || "";
+    return `${Number(row["Price/night"]).toFixed(0)} ${currency}`;
+  }
+  function fmtDelta(row) {
+    const v = row["vs. us (%)"];
+    if (v === null || v === undefined) return "—";
+    const sign = v > 0 ? "+" : "";
+    return `${sign}${v}%`;
+  }
+  function fmtBool(v) {
+    if (v === null || v === undefined) return "—";
+    return v ? "Yes" : "No";
+  }
+  function fmtRating(v) {
+    return (v === null || v === undefined) ? "—" : v;
+  }
+  function occupancyBadge(signal) {
+    const key = (signal || "unknown").replace(/[^a-z_]/gi, "_");
+    const label = (signal || "unknown").replace(/_/g, " ");
+    return `<span class="badge badge-${key}">${label}</span>`;
+  }
+
+  async function load() {
+    const subtitle = document.getElementById("subtitle");
+    const table = document.getElementById("report-table");
+    const body = document.getElementById("report-body");
+    const emptyState = document.getElementById("empty-state");
+
+    let data;
+    try {
+      const res = await fetch("./data/latest.json", { cache: "no-store" });
+      data = await res.json();
+    } catch (e) {
+      subtitle.textContent = "Could not load report data.";
+      return;
+    }
+
+    const rows = data.rows || [];
+    if (!rows.length) {
+      subtitle.textContent = "No report has run yet — check back after the next weekly run.";
+      emptyState.hidden = false;
+      table.hidden = true;
+      return;
+    }
+
+    const generated = data.generated_at ? new Date(data.generated_at) : null;
+    subtitle.textContent = generated
+      ? `Last updated ${generated.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}`
+      : "Last updated: unknown";
+
+    body.innerHTML = rows.map(row => `
+      <tr class="${row.Source === "us" ? "us-row" : ""}">
+        <td>${row.URL ? `<a href="${row.URL}" target="_blank" rel="noopener">${row.Name}</a>` : row.Name}</td>
+        <td class="cell-muted">${row.Source}</td>
+        <td>${fmtPrice(row)}</td>
+        <td>${fmtDelta(row)}</td>
+        <td>${row.Rooms ?? "—"}</td>
+        <td>${fmtBool(row.Pool)}</td>
+        <td>${fmtRating(row.Rating)}</td>
+        <td>${occupancyBadge(row["Occupancy signal"])}</td>
+        <td class="cell-muted">${row.Notes || ""}</td>
+      </tr>
+    `).join("");
+
+    emptyState.hidden = true;
+    table.hidden = false;
+  }
+
+  load();
+</script>
+</body>
+</html>

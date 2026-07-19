@@ -29,10 +29,21 @@ jobs:
           COMPETITOR_PRICING_CONFIG: ${{ secrets.COMPETITOR_PRICING_CONFIG }}
 
       - name: Run report
-        run: python -m competitor_pricing.main --config config.yaml
+        run: |
+          python -m competitor_pricing.main \
+            --config config.yaml \
+            --output-json ../../dashboard/data/latest.json
         env:
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           AIRBNB_DATA_API_KEY: ${{ secrets.AIRBNB_DATA_API_KEY }}
+
+      - name: Deploy dashboard to Vercel
+        working-directory: dashboard
+        run: npx --yes vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: team_oQmdjIkbiCNFc7TzbEIoYjRe
+          VERCEL_PROJECT_ID: prj_Pfgfp348VL31Gge6cj0SGAtyC1Ks

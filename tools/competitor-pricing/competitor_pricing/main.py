@@ -8,7 +8,7 @@ from .config import load_config
 from .emailer import send_report_email
 from .models import PropertyReport
 from .providers.http_json import HttpJsonAirbnbProvider
-from .report import build_dataframe, to_csv, to_html
+from .report import build_dataframe, to_csv, to_html, to_json
 from .scrapers.booking import scrape_booking_listing
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
@@ -62,6 +62,10 @@ def main(argv: list[str] | None = None) -> int:
         "--output-csv",
         help="Optionally also write the CSV report to this local path",
     )
+    parser.add_argument(
+        "--output-json",
+        help="Optionally also write a JSON report (for the dashboard) to this local path",
+    )
     args = parser.parse_args(argv)
 
     config = load_config(args.config)
@@ -75,6 +79,11 @@ def main(argv: list[str] | None = None) -> int:
         with open(args.output_csv, "w") as f:
             f.write(csv_body)
         logger.info("Wrote CSV report to %s", args.output_csv)
+
+    if args.output_json:
+        with open(args.output_json, "w") as f:
+            f.write(to_json(df))
+        logger.info("Wrote JSON report to %s", args.output_json)
 
     if args.dry_run:
         print(df.to_string(index=False))
