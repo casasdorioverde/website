@@ -79,12 +79,49 @@
   a { color: var(--accent); }
   .cell-muted { color: var(--muted); }
   footer { margin-top: 1.5rem; color: var(--muted); font-size: 0.8rem; }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1.25rem;
+  }
+  .toolbar button {
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.45rem 0.9rem;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+  }
+  .toolbar button:disabled { opacity: 0.6; cursor: wait; }
+  .toolbar input {
+    font: inherit;
+    font-size: 0.85rem;
+    padding: 0.45rem 0.7rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    min-width: 12rem;
+  }
+  #trigger-status { font-size: 0.85rem; color: var(--muted); }
+  #trigger-status.ok { color: var(--badge-available-fg); }
+  #trigger-status.err { color: var(--badge-sold-out-fg); }
 </style>
 </head>
 <body>
 <main>
   <h1>Competitor pricing — Casas do Rio Verde</h1>
   <p class="subtitle" id="subtitle">Loading latest report…</p>
+  <div class="toolbar">
+    <input type="password" id="trigger-secret" placeholder="Passphrase" autocomplete="off" />
+    <button id="trigger-btn">Run report now</button>
+    <span id="trigger-status"></span>
+  </div>
   <div class="panel">
     <div class="table-scroll">
       <table id="report-table" hidden>
@@ -182,6 +219,41 @@
   }
 
   load();
+
+  const triggerBtn = document.getElementById("trigger-btn");
+  const triggerSecret = document.getElementById("trigger-secret");
+  const triggerStatus = document.getElementById("trigger-status");
+
+  triggerBtn.addEventListener("click", async () => {
+    if (!triggerSecret.value) {
+      triggerStatus.textContent = "Enter the passphrase first.";
+      triggerStatus.className = "err";
+      return;
+    }
+    triggerBtn.disabled = true;
+    triggerStatus.textContent = "Triggering…";
+    triggerStatus.className = "";
+    try {
+      const res = await fetch("/api/trigger", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ secret: triggerSecret.value }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        triggerStatus.textContent = data.message || "Workflow triggered.";
+        triggerStatus.className = "ok";
+      } else {
+        triggerStatus.textContent = data.error || `Failed (${res.status})`;
+        triggerStatus.className = "err";
+      }
+    } catch (e) {
+      triggerStatus.textContent = "Request failed: " + e.message;
+      triggerStatus.className = "err";
+    } finally {
+      triggerBtn.disabled = false;
+    }
+  });
 </script>
 </body>
 </html>
