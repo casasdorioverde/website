@@ -1,0 +1,55 @@
+# Copy this file to config.yaml and fill in your real data.
+# config.yaml is gitignored, since it will contain your competitors and email addresses.
+
+us:
+  name: "Casas do Rio Verde"
+  price_per_night: 95
+  currency: EUR
+  rooms: 6
+  has_pool: true
+
+# Each competitor needs EITHER a booking_url (scraped automatically) OR an
+# airbnb_listing_id (fetched via the paid data provider below), or both.
+# rooms / has_pool are manual fallbacks used when the scraper/provider can't
+# confirm a value.
+competitors:
+  - name: "Example Quinta"
+    booking_url: "https://www.booking.com/hotel/pt/example-quinta.html"
+    rooms: 8
+    has_pool: true
+
+  - name: "Example Airbnb Villa"
+    airbnb_listing_id: "12345678"
+    rooms: 4
+    has_pool: false
+
+# Search parameters used when building the Booking.com URL for each competitor.
+search:
+  checkin_offset_days: 14 # look at availability/price starting N days from today
+  nights: 2
+  adults: 2
+
+# Airbnb has no public API and blocks scraping. This tool does not scrape
+# Airbnb. Instead, point this at a paid data provider you've signed up for
+# (e.g. AirDNA, Rabbu, AirROI, Mashvisor, PriceLabs) that exposes a simple
+# REST + JSON endpoint. field_map uses dot-notation to pull values out of
+# whatever JSON shape that provider returns - no code changes needed for
+# most REST APIs. Leave enabled: false until you have a real subscription.
+airbnb_provider:
+  enabled: false
+  base_url: "https://api.example-provider.com"
+  listing_endpoint: "/v1/listings/{listing_id}"
+  api_key_env: "AIRBNB_DATA_API_KEY"
+  auth_header_template: "Authorization: Bearer {api_key}"
+  field_map:
+    price_per_night: "data.price.amount"
+    currency: "data.price.currency"
+    occupancy_pct: "data.occupancy.rate"
+    rating: "data.rating.value"
+    rooms: "data.bedrooms"
+
+email:
+  from: "reports@example.com"
+  to:
+    - "owner@example.com"
+  subject_prefix: "[Competitor Pricing]"

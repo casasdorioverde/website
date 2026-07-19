@@ -1,0 +1,38 @@
+name: Competitor Pricing Report
+
+on:
+  schedule:
+    - cron: "0 7 * * 1" # every Monday 07:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/competitor-pricing
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
+
+      - name: Write config.yaml from secret
+        run: echo "$COMPETITOR_PRICING_CONFIG" > config.yaml
+        env:
+          COMPETITOR_PRICING_CONFIG: ${{ secrets.COMPETITOR_PRICING_CONFIG }}
+
+      - name: Run report
+        run: python -m competitor_pricing.main --config config.yaml
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          AIRBNB_DATA_API_KEY: ${{ secrets.AIRBNB_DATA_API_KEY }}
