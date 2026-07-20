@@ -1,0 +1,243 @@
+---
+// Casas do Rio Verde — toekomstplannen: kaart van de Áreas de Reabilitação
+// Urbana (ARU) rond Lagos. De cirkels zijn indicatief: ze staan op de kern
+// van elke zone en zijn geschaald naar de officiële oppervlakte in hectare.
+// Exacte perceelscontrole: https://www.portaldahabitacao.pt/consulte-as-aru
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Casas do Rio Verde — ARU map, western Algarve</title>
+    <meta
+      name="description"
+      content="Urban Rehabilitation Areas (ARU) around Lagos, Algarve — where certified renovations qualify for IMI/IMT exemptions, 6% VAT and IRS deductions."
+    />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <style>
+      :root {
+        --ink: #1d1c1a;
+        --paper: #eceae4;
+        --bg: #e9e7e2;
+        --hairline: #c6c2b9;
+        --accent: #b4502a;
+        --aru: #1f7a4d;
+        --none: #8a8578;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: 'Archivo', Arial, sans-serif;
+        color: var(--ink);
+        background: var(--bg);
+        line-height: 1.55;
+      }
+      header {
+        padding: 1.5rem 1.25rem 1rem;
+        max-width: 72rem;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: clamp(1.6rem, 4vw, 2.6rem);
+        text-transform: uppercase;
+        letter-spacing: -0.015em;
+        line-height: 1;
+        margin: 0 0 0.4em;
+      }
+      .sub {
+        max-width: 46rem;
+        margin: 0;
+        color: #4a4740;
+      }
+      #map {
+        height: min(70vh, 640px);
+        max-width: 72rem;
+        margin: 1rem auto;
+        border: 1px solid var(--hairline);
+      }
+      .legend {
+        max-width: 72rem;
+        margin: 0 auto 2rem;
+        padding: 0 1.25rem;
+        font-size: 0.95rem;
+      }
+      .legend .dot {
+        display: inline-block;
+        width: 0.75em;
+        height: 0.75em;
+        border-radius: 50%;
+        margin-right: 0.35em;
+        vertical-align: baseline;
+      }
+      .dot.aru {
+        background: var(--aru);
+      }
+      .dot.expiring {
+        background: var(--accent);
+      }
+      .dot.none {
+        background: var(--none);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        font-size: 0.92rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.45rem 0.6rem;
+        border-bottom: 1px solid var(--hairline);
+        vertical-align: top;
+      }
+      .note {
+        font-size: 0.85rem;
+        color: #6b675e;
+        margin-top: 1rem;
+      }
+      .leaflet-popup-content {
+        font-family: inherit;
+      }
+      .leaflet-popup-content b {
+        display: block;
+        margin-bottom: 0.2em;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Casas do Rio Verde — ARU map</h1>
+      <p class="sub">
+        Urban Rehabilitation Areas (Áreas de Reabilitação Urbana) in the western
+        Algarve. Inside an ARU, a certified renovation qualifies for IMI
+        exemption (3&nbsp;yrs, extendable +5), IMT exemption on purchase for
+        rehabilitation, 6% VAT on works and a 30% IRS deduction (cap €500).
+      </p>
+    </header>
+
+    <div id="map"></div>
+
+    <div class="legend">
+      <p>
+        <span class="dot expiring"></span> ARU expiring soon (Lagos: constituted
+        30-10-2012, 15-year term → ~late 2027) &nbsp;
+        <span class="dot aru"></span> Active ARU &nbsp;
+        <span class="dot none"></span> No ARU (rural concelho areas, Aljezur,
+        Monchique)
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Municipality</th><th>ARU</th><th>Size</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Lagos</td><td>Historic centre (only ARU in the concelho)</td><td>±50 ha</td><td>Active until ~2027; rural villages not covered</td></tr>
+          <tr><td>Portimão</td><td>Historic centre</td><td>—</td><td>Active</td></tr>
+          <tr><td>Vila do Bispo</td><td>Village ARUs (see municipal site)</td><td>—</td><td>Active</td></tr>
+          <tr><td>Lagoa</td><td>Carvoeiro · Ferragudo · Estômbar · Porches · Parchal · Mexilhoeira da Carregação/Calvário</td><td>11–59 ha each</td><td>Active</td></tr>
+          <tr><td>Aljezur / Monchique</td><td>None published</td><td>—</td><td>Aljezur has its own municipal rehab-incentive regulation (Reg. 86/2015)</td></tr>
+        </tbody>
+      </table>
+
+      <p class="note">
+        Circles are indicative: centred on each zone and scaled to the official
+        area in hectares, not the legal boundary. Always verify a specific plot
+        on the
+        <a href="https://www.portaldahabitacao.pt/consulte-as-aru"
+          >Portal da Habitação ARU lookup</a
+        >
+        or with the câmara municipal before relying on the tax benefits.
+      </p>
+    </div>
+
+    <script
+      is:inline
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""></script>
+    <script is:inline>
+      const map = L.map('map').setView([37.13, -8.62], 11);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors',
+      }).addTo(map);
+
+      // radius (m) from hectares: r = sqrt(ha * 10000 / PI)
+      const rHa = (ha) => Math.sqrt((ha * 10000) / Math.PI);
+
+      const zones = [
+        {
+          name: 'ARU Lagos — historic centre',
+          lat: 37.1017, lng: -8.6735, ha: 50, color: '#b4502a',
+          info: 'Constituted 30-10-2012, 15-year term (until ~2027). The only ARU in the Lagos concelho.',
+        },
+        {
+          name: 'ARU Portimão — historic centre',
+          lat: 37.1366, lng: -8.5377, ha: 40, color: '#1f7a4d',
+          info: 'Historic centre regeneration ARU (size indicative).',
+        },
+        {
+          name: 'ARU Vila do Bispo',
+          lat: 37.0827, lng: -8.9117, ha: 20, color: '#1f7a4d',
+          info: 'Vila do Bispo has published village ARUs — see cm-viladobispo.pt (size indicative).',
+        },
+        { name: 'ARU Carvoeiro', lat: 37.0975, lng: -8.4716, ha: 11, color: '#1f7a4d', info: 'Lagoa municipality.' },
+        { name: 'ARU Ferragudo', lat: 37.1231, lng: -8.5186, ha: 30.5, color: '#1f7a4d', info: 'Lagoa municipality.' },
+        { name: 'ARU Estômbar', lat: 37.1443, lng: -8.4874, ha: 23.8, color: '#1f7a4d', info: 'Lagoa municipality.' },
+        { name: 'ARU Porches', lat: 37.1270, lng: -8.4022, ha: 22.4, color: '#1f7a4d', info: 'Lagoa municipality.' },
+        { name: 'ARU Parchal', lat: 37.1330, lng: -8.5232, ha: 53.9, color: '#1f7a4d', info: 'Lagoa municipality.' },
+        {
+          name: 'ARU Mexilhoeira da Carregação / Calvário',
+          lat: 37.1441, lng: -8.5089, ha: 59.4, color: '#1f7a4d',
+          info: 'Lagoa municipality.',
+        },
+      ];
+
+      for (const z of zones) {
+        L.circle([z.lat, z.lng], {
+          radius: rHa(z.ha),
+          color: z.color,
+          weight: 2,
+          fillColor: z.color,
+          fillOpacity: 0.18,
+        })
+          .addTo(map)
+          .bindPopup(
+            `<b>${z.name}</b>±${z.ha} ha (indicative circle)<br>${z.info}`
+          );
+      }
+
+      // Places WITHOUT an ARU that matter for Casas do Rio Verde scouting.
+      const noAru = [
+        { name: 'Bensafrim', lat: 37.1571, lng: -8.7318 },
+        { name: 'Barão de São João', lat: 37.1414, lng: -8.7602 },
+        { name: 'Odiáxere', lat: 37.1441, lng: -8.6444 },
+        { name: 'Aljezur', lat: 37.3167, lng: -8.8034 },
+        { name: 'Monchique', lat: 37.3177, lng: -8.5556 },
+      ];
+      for (const p of noAru) {
+        L.circleMarker([p.lat, p.lng], {
+          radius: 6,
+          color: '#8a8578',
+          weight: 2,
+          fillColor: '#8a8578',
+          fillOpacity: 0.6,
+        })
+          .addTo(map)
+          .bindPopup(`<b>${p.name}</b>No ARU published — tax benefits do not apply here.`);
+      }
+    </script>
+  </body>
+</html>
