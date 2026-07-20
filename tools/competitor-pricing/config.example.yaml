@@ -1,0 +1,80 @@
+# Copy this file to config.yaml and fill in your real data.
+# config.yaml is gitignored, since it will contain your competitors and email addresses.
+
+us:
+  name: "Casas do Rio Verde"
+  price_per_night: 95
+  currency: EUR
+  rooms: 6
+  has_pool: true
+  # Optional: our own Booking.com listing. If set, it's scraped like a
+  # competitor so the report shows the price guests actually see
+  # (a parity check against price_per_night above).
+  booking_url: "https://www.booking.com/hotel/pt/our-own-listing.html"
+
+# Each competitor needs EITHER a booking_url (scraped automatically) OR an
+# airbnb_listing_id (fetched via the paid data provider below), or both.
+# rooms / has_pool are manual fallbacks used when the scraper/provider can't
+# confirm a value. region is a free-text label (e.g. north/south/east/west,
+# or a town name) used only to group/sort the report - doesn't affect
+# scraping.
+competitors:
+  - name: "Example Quinta"
+    booking_url: "https://www.booking.com/hotel/pt/example-quinta.html"
+    region: north
+    rooms: 8
+    has_pool: true
+
+  - name: "Example Airbnb Villa"
+    airbnb_listing_id: "12345678"
+    region: south
+    rooms: 4
+    has_pool: false
+
+# Date windows to check prices for. Each competitor's Booking.com page is
+# loaded once per window, so keep the list short. next_weekend: true means
+# check-in on the next upcoming Friday; otherwise checkin_offset_days is
+# days from today.
+search:
+  adults: 2
+  windows:
+    - label: "weekend"
+      next_weekend: true
+      nights: 2
+    - label: "+30d"
+      checkin_offset_days: 30
+      nights: 2
+    - label: "+90d"
+      checkin_offset_days: 90
+      nights: 2
+
+# Airbnb has no public API and blocks scraping. This tool does not scrape
+# Airbnb. Instead, point this at a paid data provider you've signed up for.
+# AirROI (airroi.com/api) is the cheapest fit for a handful of listings
+# (pay-as-you-go, ~$0.01/call), but AirDNA/Rabbu/Mashvisor work too if they
+# expose REST+JSON. The values below are PLACEHOLDERS - copy the real
+# endpoint path and response field names from your vendor's API docs.
+# field_map uses dot-notation to pull values out of whatever JSON shape the
+# vendor returns - no code changes needed. Leave enabled: false until you
+# have a subscription and have verified the endpoint.
+airbnb_provider:
+  enabled: false
+  base_url: "https://api.airroi.com" # verify against vendor docs
+  listing_endpoint: "/v1/listings/{listing_id}" # verify against vendor docs
+  api_key_env: "AIRBNB_DATA_API_KEY"
+  auth_header_template: "Authorization: Bearer {api_key}"
+  field_map: # verify each path against a real API response
+    price_per_night: "data.price.amount"
+    currency: "data.price.currency"
+    occupancy_pct: "data.occupancy.rate"
+    rating: "data.rating.value"
+    rooms: "data.bedrooms"
+
+email:
+  from: "reports@example.com"
+  to:
+    - "owner@example.com"
+  subject_prefix: "[Competitor Pricing]"
+  # "always" = send the digest every run; "changes_only" = only email when
+  # there's at least one alert (price move >=10%, sold out, undercut).
+  mode: always

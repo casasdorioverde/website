@@ -3,3 +3,11 @@ node_modules/
 .astro/
 npm-debug.log*
 .DS_Store
+
+tools/competitor-pricing/config.yaml
+tools/competitor-pricing/.venv/
+tools/competitor-pricing/__pycache__/
+tools/competitor-pricing/**/__pycache__/
+
+dashboard/node_modules/
+dashboard/dist/

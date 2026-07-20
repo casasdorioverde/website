@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Casas do Rio Verde — Competitor Pricing</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f6f3;
+    --panel: #ffffff;
+    --text: #1c1b1a;
+    --muted: #6b6862;
+    --border: #e4e1da;
+    --accent: #2f6f4f;
+    --us-bg: #eaf3ec;
+    --up: #9b2c1f;
+    --down: #256641;
+    --alert-bg: #fbeed9;
+    --alert-border: #e8b662;
+    --badge-sold-out-bg: #fbe4e1; --badge-sold-out-fg: #9b2c1f;
+    --badge-limited-bg: #fbeed9; --badge-limited-fg: #93590d;
+    --badge-available-bg: #e4f2e8; --badge-available-fg: #256641;
+    --badge-unknown-bg: #eceae5; --badge-unknown-fg: #6b6862;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17181a;
+      --panel: #202225;
+      --text: #ecebe8;
+      --muted: #9a988f;
+      --border: #33352f;
+      --accent: #7fd1a6;
+      --us-bg: #1d2b23;
+      --up: #f2a79b;
+      --down: #8fdcb0;
+      --alert-bg: #392c14;
+      --alert-border: #93590d;
+      --badge-sold-out-bg: #3a1c19; --badge-sold-out-fg: #f2a79b;
+      --badge-limited-bg: #392c14; --badge-limited-fg: #e8c27e;
+      --badge-available-bg: #163425; --badge-available-fg: #8fdcb0;
+      --badge-unknown-bg: #2b2c28; --badge-unknown-fg: #9a988f;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  main {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 4rem;
+  }
+  h1 { font-size: 1.5rem; margin: 0 0 0.25rem; }
+  .subtitle { color: var(--muted); margin: 0 0 1.5rem; font-size: 0.95rem; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .table-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 860px; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  tr:last-child td { border-bottom: none; }
+  tr.us-row td { background: var(--us-bg); font-weight: 600; }
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .badge-sold_out { background: var(--badge-sold-out-bg); color: var(--badge-sold-out-fg); }
+  .badge-limited { background: var(--badge-limited-bg); color: var(--badge-limited-fg); }
+  .badge-available { background: var(--badge-available-bg); color: var(--badge-available-fg); }
+  .badge-unknown, .badge-n_a { background: var(--badge-unknown-bg); color: var(--badge-unknown-fg); }
+  .empty-state {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--muted);
+  }
+  a { color: var(--accent); }
+  .cell-muted { color: var(--muted); }
+  footer { margin-top: 1.5rem; color: var(--muted); font-size: 0.8rem; }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1.25rem;
+  }
+  .toolbar button, .tabs button {
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.45rem 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .toolbar button {
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+  }
+  .toolbar button:disabled { opacity: 0.6; cursor: wait; }
+  .toolbar button:focus-visible, .tabs button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  #trigger-status { font-size: 0.85rem; color: var(--muted); }
+  #trigger-status.ok { color: var(--badge-available-fg); }
+  #trigger-status.err { color: var(--badge-sold-out-fg); }
+
+  /* Alerts — what changed since last run */
+  .alerts {
+    background: var(--alert-bg);
+    border: 1px solid var(--alert-border);
+    border-radius: 12px;
+    padding: 0.9rem 1.1rem;
+    margin: 0 0 1.25rem;
+    font-size: 0.9rem;
+  }
+  .alerts h2 { margin: 0 0 0.4rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .alerts ul { margin: 0; padding-left: 1.2rem; }
+  .alerts li { margin: 0.15rem 0; }
+
+  /* Date-window tabs */
+  .tabs { display: flex; gap: 0.35rem; margin: 0 0 1rem; flex-wrap: wrap; }
+  .tabs button {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--muted);
+  }
+  .tabs button[aria-pressed="true"] {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--us-bg);
+  }
+
+  /* Region compass — the island, N/S/E/W, vs our price */
+  .regions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.6rem;
+    margin: 0 0 1.25rem;
+  }
+  .region-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.75rem 0.95rem;
+  }
+  .region-card .r-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .region-card .r-price { font-size: 1.25rem; font-weight: 700; margin: 0.15rem 0 0.05rem; }
+  .region-card .r-vs { font-size: 0.8rem; }
+  .region-card.us-card { border-color: var(--accent); background: var(--us-bg); }
+  .delta-up { color: var(--up); }
+  .delta-down { color: var(--down); }
+  .spark { display: block; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Competitor pricing — Casas do Rio Verde</h1>
+  <p class="subtitle" id="subtitle">Loading latest report…</p>
+  <div class="toolbar">
+    <button id="trigger-btn">Run report now</button>
+    <span id="trigger-status"></span>
+  </div>
+  <div class="alerts" id="alerts" hidden>
+    <h2>Changes since last run</h2>
+    <ul id="alerts-list"></ul>
+  </div>
+  <div class="tabs" id="tabs" hidden></div>
+  <div class="regions" id="regions" hidden></div>
+  <div class="panel">
+    <div class="table-scroll">
+      <table id="report-table" hidden>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Source</th>
+            <th>Region</th>
+            <th>Price / night</th>
+            <th>vs. us</th>
+            <th>Δ week</th>
+            <th>Trend</th>
+            <th>Rooms</th>
+            <th>Pool</th>
+            <th>Rating</th>
+            <th>Occupancy</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="report-body"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="empty-state">No report has run yet.</div>
+  </div>
+  <footer>Data refreshes weekly from Booking.com listings and (optionally) a paid Airbnb data provider. Missing values mean the source didn't confirm that field. Trend shows the last few weekly prices.</footer>
+</main>
+<script>
+  function fmtPrice(row) {
+    if (row["Price/night"] === null || row["Price/night"] === undefined) return "—";
+    const currency = row["Currency"] || "";
+    return `${Number(row["Price/night"]).toFixed(0)} ${currency}`;
+  }
+  function fmtPct(v, colored) {
+    if (v === null || v === undefined) return "—";
+    const sign = v > 0 ? "+" : "";
+    const cls = v > 0 ? "delta-up" : v < 0 ? "delta-down" : "";
+    const arrow = v > 0 ? "▲" : v < 0 ? "▼" : "";
+    const text = `${sign}${v}% ${arrow}`.trim();
+    return colored && cls ? `<span class="${cls}">${text}</span>` : text;
+  }
+  function fmtBool(v) {
+    if (v === null || v === undefined) return "—";
+    return v ? "Yes" : "No";
+  }
+  function occupancyBadge(signal) {
+    const key = (signal || "unknown").replace(/[^a-z_]/gi, "_");
+    const label = (signal || "unknown").replace(/_/g, " ");
+    return `<span class="badge badge-${key}">${label}</span>`;
+  }
+  function sparkline(row) {
+    const hist = (row.History || [])
+      .map(h => h.price)
+      .concat([row["Price/night"]])
+      .filter(p => p !== null && p !== undefined);
+    if (hist.length < 2) return "";
+    const w = 76, h = 22, pad = 2;
+    const min = Math.min(...hist), max = Math.max(...hist);
+    const span = max - min || 1;
+    const pts = hist.map((p, i) => {
+      const x = pad + (i * (w - 2 * pad)) / (hist.length - 1);
+      const y = h - pad - ((p - min) * (h - 2 * pad)) / span;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(" ");
+    return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-label="price trend">
+      <polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.75"/>
+    </svg>`;
+  }
+
+  let allRows = [], selectedWindow = "";
+
+  function windowsIn(rows) {
+    const seen = [];
+    for (const r of rows) {
+      const w = r.Window || "";
+      if (w && !seen.includes(w)) seen.push(w);
+    }
+    return seen;
+  }
+  function visibleRows() {
+    return allRows.filter(r => (r.Window || "") === selectedWindow || (r.Window || "") === "");
+  }
+
+  function renderTabs(windows) {
+    const tabs = document.getElementById("tabs");
+    if (windows.length < 2) { tabs.hidden = true; return; }
+    tabs.innerHTML = windows.map(w =>
+      `<button aria-pressed="${w === selectedWindow}" data-window="${w}">${w}</button>`
+    ).join("");
+    tabs.hidden = false;
+    tabs.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedWindow = btn.dataset.window;
+        renderTabs(windows);
+        renderRegions();
+        renderTable();
+      });
+    });
+  }
+
+  function renderRegions() {
+    const el = document.getElementById("regions");
+    const rows = visibleRows();
+    const usRow = rows.find(r => r.Source === "us");
+    const usPrice = usRow ? usRow["Price/night"] : null;
+    const currency = usRow ? (usRow.Currency || "") : "";
+
+    const byRegion = {};
+    for (const r of rows) {
+      const region = r.Region || "";
+      const p = r["Price/night"];
+      if (!region || r.Source === "us" || p === null || p === undefined) continue;
+      (byRegion[region] = byRegion[region] || []).push(p);
+    }
+    const regions = Object.keys(byRegion);
+    if (!regions.length) { el.hidden = true; return; }
+
+    const order = ["north", "south", "east", "west"];
+    regions.sort((a, b) => {
+      const ia = order.indexOf(a), ib = order.indexOf(b);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+    });
+
+    const cards = [];
+    if (usPrice !== null && usPrice !== undefined) {
+      cards.push(`<div class="region-card us-card">
+        <div class="r-label">Our price</div>
+        <div class="r-price">${Number(usPrice).toFixed(0)} ${currency}</div>
+        <div class="r-vs cell-muted">${usRow.Name}</div>
+      </div>`);
+    }
+    for (const region of regions) {
+      const prices = byRegion[region];
+      const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+      let vs = "";
+      if (usPrice) {
+        const pct = Math.round(((avg - usPrice) / usPrice) * 100);
+        vs = `<div class="r-vs">${fmtPct(pct, true)} vs us</div>`;
+      }
+      cards.push(`<div class="region-card">
+        <div class="r-label">${region} · avg of ${prices.length}</div>
+        <div class="r-price">${avg.toFixed(0)} ${currency}</div>
+        ${vs}
+      </div>`);
+    }
+    el.innerHTML = cards.join("");
+    el.hidden = false;
+  }
+
+  function renderTable() {
+    const body = document.getElementById("report-body");
+    body.innerHTML = visibleRows().map(row => `
+      <tr class="${row.Source === "us" ? "us-row" : ""}">
+        <td>${row.URL ? `<a href="${row.URL}" target="_blank" rel="noopener">${row.Name}</a>` : row.Name}</td>
+        <td class="cell-muted">${row.Source}</td>
+        <td class="cell-muted">${row.Region || "—"}</td>
+        <td>${fmtPrice(row)}</td>
+        <td>${fmtPct(row["vs. us (%)"], false)}</td>
+        <td>${fmtPct(row["Δ prev (%)"], true)}</td>
+        <td>${sparkline(row)}</td>
+        <td>${row.Rooms ?? "—"}</td>
+        <td>${fmtBool(row.Pool)}</td>
+        <td>${row.Rating ?? "—"}</td>
+        <td>${occupancyBadge(row["Occupancy signal"])}</td>
+        <td class="cell-muted">${row.Notes || ""}</td>
+      </tr>
+    `).join("");
+  }
+
+  async function load() {
+    const subtitle = document.getElementById("subtitle");
+    const table = document.getElementById("report-table");
+    const emptyState = document.getElementById("empty-state");
+
+    let data;
+    try {
+      const res = await fetch("./data/latest.json", { cache: "no-store" });
+      data = await res.json();
+    } catch (e) {
+      subtitle.textContent = "Could not load report data.";
+      return;
+    }
+
+    allRows = data.rows || [];
+    if (!allRows.length) {
+      subtitle.textContent = "No report has run yet — use “Run report now” or wait for Monday's scheduled run.";
+      emptyState.hidden = false;
+      table.hidden = true;
+      return;
+    }
+
+    const generated = data.generated_at ? new Date(data.generated_at) : null;
+    subtitle.textContent = generated
+      ? `Last updated ${generated.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}`
+      : "Last updated: unknown";
+
+    const alerts = data.alerts || [];
+    if (alerts.length) {
+      document.getElementById("alerts-list").innerHTML =
+        alerts.map(a => `<li>${a.text}</li>`).join("");
+      document.getElementById("alerts").hidden = false;
+    }
+
+    const windows = (data.windows && data.windows.length)
+      ? data.windows
+      : windowsIn(allRows);
+    selectedWindow = windows[0] || "";
+    renderTabs(windows);
+    renderRegions();
+    renderTable();
+
+    emptyState.hidden = true;
+    table.hidden = false;
+  }
+
+  load();
+
+  const triggerBtn = document.getElementById("trigger-btn");
+  const triggerStatus = document.getElementById("trigger-status");
+
+  triggerBtn.addEventListener("click", async () => {
+    triggerBtn.disabled = true;
+    triggerStatus.textContent = "Triggering…";
+    triggerStatus.className = "";
+    try {
+      const res = await fetch("/api/trigger", { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        triggerStatus.textContent = data.message || "Workflow triggered.";
+        triggerStatus.className = "ok";
+      } else {
+        triggerStatus.textContent = data.error || `Failed (${res.status})`;
+        triggerStatus.className = "err";
+      }
+    } catch (e) {
+      triggerStatus.textContent = "Request failed: " + e.message;
+      triggerStatus.className = "err";
+    } finally {
+      triggerBtn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
