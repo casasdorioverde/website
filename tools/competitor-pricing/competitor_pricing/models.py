@@ -6,6 +6,7 @@ from typing import Optional
 class PropertyReport:
     name: str
     source: str  # "us" | "booking" | "airbnb"
+    window: str = ""  # date-window label, "" = window-independent row
     region: Optional[str] = None
     url: Optional[str] = None
     price_per_night: Optional[float] = None

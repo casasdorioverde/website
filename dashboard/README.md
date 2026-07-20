@@ -26,7 +26,7 @@ Environment Variables), then redeploy:
   (github.com -> Settings -> Developer settings -> Fine-grained tokens)
   scoped to this repo with **Actions: Read and write** permission
 - `WORKFLOW_REF` (optional) - branch containing the workflow file; defaults
-  to `claude/bb-competitor-price-tool-g1t21u`, update once merged
+  to the repo's default branch
 
 Until the token is set, the button returns a clear "not configured"
 message.

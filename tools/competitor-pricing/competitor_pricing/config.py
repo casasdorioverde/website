@@ -14,6 +14,7 @@ class UsConfig:
     currency: str = "EUR"
     rooms: Optional[int] = None
     has_pool: Optional[bool] = None
+    booking_url: Optional[str] = None  # our own listing, scraped for parity
 
 
 @dataclass
@@ -27,9 +28,22 @@ class CompetitorConfig:
 
 
 @dataclass
-class SearchConfig:
+class WindowConfig:
+    """One date window to check prices for.
+
+    Either a fixed offset from today (checkin_offset_days) or the next
+    upcoming weekend (next_weekend: true -> check-in next Friday).
+    """
+
+    label: str
     checkin_offset_days: int = 14
     nights: int = 2
+    next_weekend: bool = False
+
+
+@dataclass
+class SearchConfig:
+    windows: list[WindowConfig] = field(default_factory=list)
     adults: int = 2
 
 
@@ -48,6 +62,9 @@ class EmailConfig:
     from_addr: str = ""
     to: list[str] = field(default_factory=list)
     subject_prefix: str = "[Competitor Pricing]"
+    # "always" sends the weekly digest every run; "changes_only" sends
+    # only when the run produced at least one alert.
+    mode: str = "always"
 
 
 @dataclass
@@ -81,6 +98,7 @@ def load_config(path: str | Path) -> Config:
         currency=us_raw.get("currency", "EUR"),
         rooms=us_raw.get("rooms"),
         has_pool=us_raw.get("has_pool"),
+        booking_url=us_raw.get("booking_url"),
     )
 
     competitors_raw = raw.get("competitors", [])
@@ -103,11 +121,29 @@ def load_config(path: str | Path) -> Config:
         )
 
     search_raw = raw.get("search", {})
-    search = SearchConfig(
-        checkin_offset_days=search_raw.get("checkin_offset_days", 14),
-        nights=search_raw.get("nights", 2),
-        adults=search_raw.get("adults", 2),
-    )
+    windows_raw = search_raw.get("windows")
+    if windows_raw:
+        windows = [
+            WindowConfig(
+                label=_require(w, "label", "search.windows entry"),
+                checkin_offset_days=w.get("checkin_offset_days", 14),
+                nights=w.get("nights", 2),
+                next_weekend=w.get("next_weekend", False),
+            )
+            for w in windows_raw
+        ]
+    else:
+        # Backward compatibility: old configs described a single window
+        # with top-level checkin_offset_days/nights.
+        offset = search_raw.get("checkin_offset_days", 14)
+        windows = [
+            WindowConfig(
+                label=f"+{offset}d",
+                checkin_offset_days=offset,
+                nights=search_raw.get("nights", 2),
+            )
+        ]
+    search = SearchConfig(windows=windows, adults=search_raw.get("adults", 2))
 
     ab_raw = raw.get("airbnb_provider", {})
     airbnb_provider = AirbnbProviderConfig(
@@ -124,7 +160,10 @@ def load_config(path: str | Path) -> Config:
         from_addr=email_raw.get("from", ""),
         to=email_raw.get("to", []),
         subject_prefix=email_raw.get("subject_prefix", "[Competitor Pricing]"),
+        mode=email_raw.get("mode", "always"),
     )
+    if email.mode not in ("always", "changes_only"):
+        raise ValueError(f"email.mode must be 'always' or 'changes_only', got '{email.mode}'")
 
     return Config(
         us=us,

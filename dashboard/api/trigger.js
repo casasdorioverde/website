@@ -8,7 +8,7 @@
 // Optional:
 //   WORKFLOW_REPO - defaults to "casasdorioverde/website"
 //   WORKFLOW_REF  - branch containing the workflow file,
-//                   defaults to "claude/bb-competitor-price-tool-g1t21u"
+//                   defaults to the repo's default branch
 
 const WORKFLOW_FILE = "competitor-pricing.yml";
 
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
   }
 
   const repo = process.env.WORKFLOW_REPO || "casasdorioverde/website";
-  const ref = process.env.WORKFLOW_REF || "claude/bb-competitor-price-tool-g1t21u";
+  const ref = process.env.WORKFLOW_REF || "claude/brecht-website-dutch-76zdib";
 
   const ghRes = await fetch(
     `https://api.github.com/repos/${repo}/actions/workflows/${WORKFLOW_FILE}/dispatches`,

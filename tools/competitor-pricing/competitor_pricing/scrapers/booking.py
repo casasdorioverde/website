@@ -17,7 +17,7 @@ from urllib.parse import urlencode, urlparse, urlunparse, parse_qsl
 
 from playwright.sync_api import sync_playwright
 
-from ..config import CompetitorConfig, SearchConfig
+from ..config import CompetitorConfig, WindowConfig
 from ..models import PropertyReport
 
 logger = logging.getLogger(__name__)
@@ -36,9 +36,20 @@ _LIMITED_RE = re.compile(
 _SOLD_OUT_RE = re.compile(r"sold out|no availability|no rooms left", re.IGNORECASE)
 
 
-def _build_search_url(booking_url: str, search: SearchConfig) -> str:
-    checkin = date.today() + timedelta(days=search.checkin_offset_days)
-    checkout = checkin + timedelta(days=search.nights)
+def _window_checkin(window: WindowConfig) -> date:
+    if window.next_weekend:
+        # Next Friday, at least 2 days out so "next weekend" on a Thursday
+        # doesn't mean tomorrow.
+        d = date.today() + timedelta(days=2)
+        while d.weekday() != 4:  # Friday
+            d += timedelta(days=1)
+        return d
+    return date.today() + timedelta(days=window.checkin_offset_days)
+
+
+def _build_search_url(booking_url: str, window: WindowConfig, adults: int) -> str:
+    checkin = _window_checkin(window)
+    checkout = checkin + timedelta(days=window.nights)
 
     parsed = urlparse(booking_url)
     query = dict(parse_qsl(parsed.query))
@@ -46,7 +57,7 @@ def _build_search_url(booking_url: str, search: SearchConfig) -> str:
         {
             "checkin": checkin.isoformat(),
             "checkout": checkout.isoformat(),
-            "group_adults": str(search.adults),
+            "group_adults": str(adults),
             "no_rooms": "1",
         }
     )
@@ -88,18 +99,19 @@ def _detect_occupancy_signal(text: str, price_found: bool) -> str:
 
 
 def scrape_booking_listing(
-    competitor: CompetitorConfig, search: SearchConfig
+    competitor: CompetitorConfig, window: WindowConfig, adults: int = 2
 ) -> PropertyReport:
     report = PropertyReport(
         name=competitor.name,
         source="booking",
+        window=window.label,
         region=competitor.region,
         url=competitor.booking_url,
         rooms=competitor.rooms,
         has_pool=competitor.has_pool,
     )
 
-    url = _build_search_url(competitor.booking_url, search)
+    url = _build_search_url(competitor.booking_url, window, adults)
 
     try:
         with sync_playwright() as p:

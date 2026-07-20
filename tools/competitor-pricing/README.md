@@ -6,6 +6,14 @@ occupancy signal. Emails you an HTML + CSV report, and publishes the same
 data to a small dashboard at [`../../dashboard`](../../dashboard) (deployed
 to the Vercel project `calc`).
 
+Each run checks up to three **date windows** (next weekend, +30 days,
++90 days — configurable under `search.windows`), scrapes **your own
+Booking.com listing** as a parity check (`us.booking_url`), and keeps a
+**history** of dated snapshots (`--history-dir`) that powers week-over-week
+deltas, dashboard sparklines, and **change alerts** (price moves ≥10%,
+newly sold out, a competitor newly undercutting you). With
+`email.mode: changes_only` the email is only sent on runs with alerts.
+
 ## How each source is handled
 
 - **Booking.com** — scraped directly (headless browser via Playwright,
@@ -55,6 +63,10 @@ Test locally without sending email:
 python -m competitor_pricing.main --dry-run
 # or, to also save a CSV locally:
 python -m competitor_pricing.main --dry-run --output-csv report.csv
+# full CI-equivalent run (JSON for the dashboard + history snapshots):
+python -m competitor_pricing.main \
+  --output-json ../../dashboard/public/data/latest.json \
+  --history-dir ../../dashboard/public/data/history
 ```
 
 ## Running for real (email)
