@@ -205,6 +205,9 @@
         },
       ];
 
+      const aruAlgarve = L.layerGroup().addTo(map);
+      const aruLagos = L.layerGroup().addTo(map);
+
       for (const z of zones) {
         L.circle([z.lat, z.lng], {
           radius: rHa(z.ha),
@@ -213,7 +216,7 @@
           fillColor: z.color,
           fillOpacity: 0.18,
         })
-          .addTo(map)
+          .addTo(z.color === '#b4502a' ? aruLagos : aruAlgarve)
           .bindPopup(
             `<b>${z.name}</b>±${z.ha} ha (indicative circle)<br>${z.info}`
           );
@@ -227,6 +230,7 @@
         { name: 'Aljezur', lat: 37.3167, lng: -8.8034 },
         { name: 'Monchique', lat: 37.3177, lng: -8.5556 },
       ];
+      const noAruGroup = L.layerGroup().addTo(map);
       for (const p of noAru) {
         L.circleMarker([p.lat, p.lng], {
           radius: 6,
@@ -235,9 +239,21 @@
           fillColor: '#8a8578',
           fillOpacity: 0.6,
         })
-          .addTo(map)
+          .addTo(noAruGroup)
           .bindPopup(`<b>${p.name}</b>No ARU published — tax benefits do not apply here.`);
       }
+
+      L.control
+        .layers(
+          null,
+          {
+            'ARU Algarve (active)': aruAlgarve,
+            'ARU Lagos (expiring ~2027)': aruLagos,
+            'No ARU (villages)': noAruGroup,
+          },
+          { collapsed: false }
+        )
+        .addTo(map);
     </script>
   </body>
 </html>
