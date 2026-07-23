@@ -128,6 +128,7 @@
   .alerts h2 { margin: 0 0 0.4rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
   .alerts ul { margin: 0; padding-left: 1.2rem; }
   .alerts li { margin: 0.15rem 0; }
+  .alerts li.alert-home { font-weight: 600; list-style: none; margin-left: -1.2rem; }
 
   /* Date-window tabs */
   .tabs { display: flex; gap: 0.35rem; margin: 0 0 1rem; flex-wrap: wrap; }
@@ -414,8 +415,13 @@
 
     const alerts = data.alerts || [];
     if (alerts.length) {
+      const homeKinds = new Set(["home_undercut", "home_most_expensive"]);
       document.getElementById("alerts-list").innerHTML =
-        alerts.map(a => `<li>${a.text}</li>`).join("");
+        alerts.map(a => {
+          const isHome = homeKinds.has(a.kind);
+          const tag = isHome ? `<span class="zone-tag zone-tag-home">your zone</span> ` : "";
+          return `<li class="${isHome ? "alert-home" : ""}">${tag}${a.text}</li>`;
+        }).join("");
       document.getElementById("alerts").hidden = false;
     }
 

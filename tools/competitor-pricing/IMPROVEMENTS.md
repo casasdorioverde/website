@@ -26,14 +26,15 @@ now a proper, validated **zone system** for Madeira:
 
 ## Suggested next improvements (roughly prioritised)
 
-### 1. Per-zone alerts & a "home-zone leaderboard" (high value, small)
-Today alerts are global (price move ≥10%, undercut, sold out). Add zone-scoped
-signals that matter more:
-- "A competitor **in your zone** is now cheaper than you" (weighted higher than
-  an undercut two zones away).
-- "You're the most expensive in South-West this week."
-Compute these in `report.py::compute_alerts` using the already-normalised
-`Region` column.
+### 1. Per-zone alerts & a "home-zone leaderboard" ✅ shipped
+`report.py::compute_alerts` now takes `home_zone` and emits zone-scoped signals
+ranked above island-wide ones:
+- **`home_undercut`** — a competitor *in our own zone* is now cheaper than us
+  (louder than an undercut two zones away).
+- **`home_most_expensive`** — we've *newly become* the priciest property in our
+  zone (fires only on the run the ranking flips, so it doesn't spam the weekly
+  email). The dashboard tags both with a bold "your zone" marker at the top of
+  the alerts panel. Covered by `tests/test_alerts.py`.
 
 ### 2. Auto-derive the zone from the Booking.com address (medium)
 Right now `region` is entered by hand. The Booking scraper already loads each

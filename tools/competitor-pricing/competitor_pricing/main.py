@@ -118,7 +118,9 @@ def main(argv: list[str] | None = None) -> int:
 
     reports = collect_reports(config)
     df = build_dataframe(reports, prev)
-    alerts = compute_alerts(df, prev, config.us.price_per_night)
+    alerts = compute_alerts(
+        df, prev, config.us.price_per_night, home_zone=config.us.zone
+    )
     for a in alerts:
         logger.info("ALERT [%s] %s", a["kind"], a["text"])
 

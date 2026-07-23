@@ -7,10 +7,21 @@ from typing import Any, Optional
 import pandas as pd
 
 from .models import PropertyReport
-from .zones import zone_order
+from .zones import normalize_region, zone_order
 
 # Price move (either direction) vs the previous run that counts as an alert.
 ALERT_MOVE_PCT = 10.0
+
+# Alert kinds, ordered by how loudly they should shout. Home-zone signals rank
+# above island-wide ones because same-zone competitors share our actual market.
+_ALERT_PRIORITY = {
+    "home_undercut": 0,
+    "home_most_expensive": 1,
+    "undercut": 2,
+    "sold_out": 3,
+    "price_drop": 4,
+    "price_rise": 5,
+}
 
 
 def _prev_price(prev: dict, name: str, window: str) -> Optional[float]:
@@ -69,12 +80,22 @@ def build_dataframe(
 
 
 def compute_alerts(
-    df: pd.DataFrame, prev: dict, us_price: Optional[float]
+    df: pd.DataFrame,
+    prev: dict,
+    us_price: Optional[float],
+    home_zone: Optional[str] = None,
 ) -> list[dict[str, str]]:
-    """Noteworthy changes vs the previous run. Empty on the first run."""
+    """Noteworthy changes vs the previous run. Empty on the first run.
+
+    `home_zone` is our own zone (any spelling); when given, undercuts by
+    same-zone competitors are flagged more prominently and a separate alert
+    fires when we newly become the most expensive property in our zone.
+    """
     alerts: list[dict[str, str]] = []
     if not prev:
         return alerts
+
+    home_label = normalize_region(home_zone) if home_zone else None
 
     for _, row in df.iterrows():
         if row["Source"] == "us":
@@ -87,6 +108,7 @@ def compute_alerts(
 
         price = row["Price/night"]
         prev_price = prev_row.get("Price/night")
+        in_home_zone = home_label is not None and row["Region"] == home_label
 
         if price is not None and prev_price:
             move = (price - prev_price) / prev_price * 100
@@ -105,11 +127,12 @@ def compute_alerts(
                 us_price
                 and price < us_price <= prev_price
             ):
+                zone_note = f" in your zone ({home_label})" if in_home_zone else ""
                 alerts.append(
                     {
-                        "kind": "undercut",
+                        "kind": "home_undercut" if in_home_zone else "undercut",
                         "text": (
-                            f"{label}: now cheaper than us "
+                            f"{label}: now cheaper than us{zone_note} "
                             f"({price:.0f} vs our {us_price:.0f} {row['Currency']})"
                         ),
                     }
@@ -119,7 +142,63 @@ def compute_alerts(
         if row["Occupancy signal"] == "sold_out" and prev_signal != "sold_out":
             alerts.append({"kind": "sold_out", "text": f"{label}: now sold out"})
 
+    if home_label and us_price:
+        alerts.extend(
+            _home_zone_position_alerts(df, prev, us_price, home_label)
+        )
+
+    alerts.sort(key=lambda a: _ALERT_PRIORITY.get(a["kind"], 99))
     return alerts
+
+
+def _home_zone_position_alerts(
+    df: pd.DataFrame, prev: dict, us_price: float, home_label: str
+) -> list[dict[str, str]]:
+    """Fire when we newly become the most expensive property in our own zone.
+
+    Compared per date window against the previous run, so a persistent "most
+    expensive" state doesn't re-alert every week (keeps email changes_only
+    meaningful) — it only speaks up on the run where the ranking flips.
+    """
+    out: list[dict[str, str]] = []
+    zone_rows = df[(df["Source"] != "us") & (df["Region"] == home_label)]
+    if zone_rows.empty:
+        return out
+
+    for window, group in zone_rows.groupby(zone_rows["Window"].fillna("")):
+        now = [
+            (r["Name"], r["Price/night"])
+            for _, r in group.iterrows()
+            if r["Price/night"] is not None
+        ]
+        if not now:
+            continue
+
+        us_is_top_now = all(p < us_price for _, p in now)
+        # Was us already the most expensive last run? Only compare against
+        # competitors we have a previous price for; if we have none, we can't
+        # tell it "newly" flipped, so stay quiet.
+        prev_prices = [
+            pp
+            for comp_name, _ in now
+            if (pp := (prev.get((comp_name, window)) or {}).get("Price/night")) is not None
+        ]
+        us_was_top_prev = bool(prev_prices) and all(p < us_price for p in prev_prices)
+
+        if us_is_top_now and prev_prices and not us_was_top_prev:
+            cheapest = min(p for _, p in now)
+            win_note = f" [{window}]" if window else ""
+            out.append(
+                {
+                    "kind": "home_most_expensive",
+                    "text": (
+                        f"You are now the most expensive in {home_label}{win_note}: "
+                        f"{len(now)} competitor(s) below you, cheapest {cheapest:.0f} "
+                        f"vs your {us_price:.0f}"
+                    ),
+                }
+            )
+    return out
 
 
 def to_html(df: pd.DataFrame) -> str:
