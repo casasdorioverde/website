@@ -7,6 +7,11 @@ us:
   currency: EUR
   rooms: 6
   has_pool: true
+  # Which Madeira zone we're in. This is our "home zone": the dashboard
+  # highlights it and it's the most meaningful group to compare against
+  # (same area, same guests). Casas do Rio Verde is in Ponta do Sol, so
+  # southwest. Accepts any spelling the zone map knows (see below).
+  zone: southwest
   # Optional: our own Booking.com listing. If set, it's scraped like a
   # competitor so the report shows the price guests actually see
   # (a parity check against price_per_night above).
@@ -15,20 +20,37 @@ us:
 # Each competitor needs EITHER a booking_url (scraped automatically) OR an
 # airbnb_listing_id (fetched via the paid data provider below), or both.
 # rooms / has_pool are manual fallbacks used when the scraper/provider can't
-# confirm a value. region is a free-text label (e.g. north/south/east/west,
-# or a town name) used only to group/sort the report - doesn't affect
-# scraping.
+# confirm a value.
+#
+# `region` is the Madeira zone this property is in. It's normalised to one of
+# five canonical zones (see competitor_pricing/zones.py), so you can write the
+# compass point, the zone name, or just the town — all of these work:
+#   southwest  -> Ponta do Sol, Calheta, Ribeira Brava   (our home zone)
+#   south      -> Funchal, Câmara de Lobos
+#   southeast  -> Santa Cruz, Machico, Caniço, airport
+#   north      -> São Vicente, Santana, Porto Moniz, Porto da Cruz
+#   porto-santo-> Porto Santo island
+# e.g. region: "Calheta", region: "SW", region: south, region: "Machico" all
+# resolve cleanly. An unrecognised value is grouped under "Other / unmapped"
+# and logged as a warning so you can fix the typo. region never affects
+# scraping — only how the report groups and sorts.
 competitors:
-  - name: "Example Quinta"
+  - name: "Quinta da Calheta"
     booking_url: "https://www.booking.com/hotel/pt/example-quinta.html"
-    region: north
+    region: Calheta          # -> South-West (same zone as us)
     rooms: 8
     has_pool: true
 
-  - name: "Example Airbnb Villa"
+  - name: "Funchal Central Villa"
     airbnb_listing_id: "12345678"
-    region: south
+    region: Funchal          # -> South / Funchal
     rooms: 4
+    has_pool: false
+
+  - name: "Machico Sea View"
+    booking_url: "https://www.booking.com/hotel/pt/example-machico.html"
+    region: southeast        # -> South-East
+    rooms: 5
     has_pool: false
 
 # Date windows to check prices for. Each competitor's Booking.com page is

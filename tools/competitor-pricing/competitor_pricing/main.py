@@ -125,7 +125,11 @@ def main(argv: list[str] | None = None) -> int:
     csv_body = to_csv(df)
     html_body = to_html(df)
     json_body = to_json(
-        df, alerts, history_map, windows=[w.label for w in config.search.windows]
+        df,
+        alerts,
+        history_map,
+        windows=[w.label for w in config.search.windows],
+        home_zone=config.us.zone,
     )
 
     if args.history_dir:

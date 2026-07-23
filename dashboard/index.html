@@ -163,7 +163,20 @@
   }
   .region-card .r-price { font-size: 1.25rem; font-weight: 700; margin: 0.15rem 0 0.05rem; }
   .region-card .r-vs { font-size: 0.8rem; }
+  .region-card .r-meta { font-size: 0.72rem; margin-top: 0.3rem; }
   .region-card.us-card { border-color: var(--accent); background: var(--us-bg); }
+  .region-card.home-zone { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .zone-tag {
+    display: inline-block;
+    padding: 0.05rem 0.4rem;
+    border-radius: 999px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    vertical-align: middle;
+  }
+  .zone-tag-home { background: var(--badge-available-bg); color: var(--badge-available-fg); }
+  .zone-tag-cheap { background: var(--badge-limited-bg); color: var(--badge-limited-fg); }
   .delta-up { color: var(--up); }
   .delta-down { color: var(--down); }
   .spark { display: block; }
@@ -251,7 +264,7 @@
     </svg>`;
   }
 
-  let allRows = [], selectedWindow = "";
+  let allRows = [], selectedWindow = "", zoneOrder = [], homeZone = "";
 
   function windowsIn(rows) {
     const seen = [];
@@ -289,42 +302,61 @@
     const usPrice = usRow ? usRow["Price/night"] : null;
     const currency = usRow ? (usRow.Currency || "") : "";
 
-    const byRegion = {};
+    // Gather each zone's competitor prices (exclude our own rows).
+    const byZone = {};
     for (const r of rows) {
-      const region = r.Region || "";
+      const zone = r.Region || "";
       const p = r["Price/night"];
-      if (!region || r.Source === "us" || p === null || p === undefined) continue;
-      (byRegion[region] = byRegion[region] || []).push(p);
+      if (!zone || r.Source === "us" || p === null || p === undefined) continue;
+      (byZone[zone] = byZone[zone] || []).push(p);
     }
-    const regions = Object.keys(byRegion);
-    if (!regions.length) { el.hidden = true; return; }
+    let zones = Object.keys(byZone);
+    if (!zones.length) { el.hidden = true; return; }
 
-    const order = ["north", "south", "east", "west"];
-    regions.sort((a, b) => {
-      const ia = order.indexOf(a), ib = order.indexOf(b);
-      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+    // Canonical west->east order from the report; anything not listed falls
+    // to the end alphabetically.
+    zones.sort((a, b) => {
+      const ia = zoneOrder.indexOf(a), ib = zoneOrder.indexOf(b);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
     });
+
+    // Per-zone stats, so we can flag the single cheapest zone by average.
+    const stats = {};
+    let cheapestZone = null, cheapestAvg = Infinity;
+    for (const zone of zones) {
+      const prices = byZone[zone];
+      const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+      const min = Math.min(...prices);
+      stats[zone] = { avg, min, count: prices.length };
+      if (avg < cheapestAvg) { cheapestAvg = avg; cheapestZone = zone; }
+    }
 
     const cards = [];
     if (usPrice !== null && usPrice !== undefined) {
+      const homeLabel = homeZone ? `Our zone · ${homeZone}` : "Our price";
       cards.push(`<div class="region-card us-card">
-        <div class="r-label">Our price</div>
+        <div class="r-label">${homeLabel}</div>
         <div class="r-price">${Number(usPrice).toFixed(0)} ${currency}</div>
         <div class="r-vs cell-muted">${usRow.Name}</div>
       </div>`);
     }
-    for (const region of regions) {
-      const prices = byRegion[region];
-      const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+    for (const zone of zones) {
+      const { avg, min, count } = stats[zone];
+      const isHome = homeZone && zone === homeZone;
+      const isCheapest = zone === cheapestZone && zones.length > 1;
       let vs = "";
       if (usPrice) {
         const pct = Math.round(((avg - usPrice) / usPrice) * 100);
         vs = `<div class="r-vs">${fmtPct(pct, true)} vs us</div>`;
       }
-      cards.push(`<div class="region-card">
-        <div class="r-label">${region} · avg of ${prices.length}</div>
+      const tags = [];
+      if (isHome) tags.push(`<span class="zone-tag zone-tag-home">home</span>`);
+      if (isCheapest) tags.push(`<span class="zone-tag zone-tag-cheap">cheapest</span>`);
+      cards.push(`<div class="region-card${isHome ? " home-zone" : ""}">
+        <div class="r-label">${zone}${tags.length ? " " + tags.join(" ") : ""}</div>
         <div class="r-price">${avg.toFixed(0)} ${currency}</div>
         ${vs}
+        <div class="r-meta cell-muted">${count} ${count === 1 ? "property" : "properties"} · from ${min.toFixed(0)} ${currency}</div>
       </div>`);
     }
     el.innerHTML = cards.join("");
@@ -366,6 +398,8 @@
     }
 
     allRows = data.rows || [];
+    zoneOrder = data.zone_order || [];
+    homeZone = data.home_zone || "";
     if (!allRows.length) {
       subtitle.textContent = "No report has run yet — use “Run report now” or wait for Monday's scheduled run.";
       emptyState.hidden = false;

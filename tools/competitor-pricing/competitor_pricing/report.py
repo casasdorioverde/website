@@ -7,6 +7,7 @@ from typing import Any, Optional
 import pandas as pd
 
 from .models import PropertyReport
+from .zones import zone_order
 
 # Price move (either direction) vs the previous run that counts as an alert.
 ALERT_MOVE_PCT = 10.0
@@ -134,6 +135,7 @@ def to_json(
     alerts: Optional[list[dict[str, str]]] = None,
     history_map: Optional[dict] = None,
     windows: Optional[list[str]] = None,
+    home_zone: Optional[str] = None,
 ) -> str:
     rows: list[dict[str, Any]] = json.loads(df.to_json(orient="records"))
     if history_map:
@@ -141,9 +143,17 @@ def to_json(
             key = (row.get("Name", ""), row.get("Window", "") or "")
             if key in history_map:
                 row["History"] = history_map[key]
+
+    # Canonical west->east ordering of the zones actually present, so the
+    # dashboard compass lays out consistently instead of by insertion order.
+    present = [r.get("Region", "") for r in rows if r.get("Region")]
+    ordered_zones = zone_order(present)
+
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "windows": windows or [],  # config order, drives dashboard tab order
+        "zone_order": ordered_zones,  # canonical order for the zone compass
+        "home_zone": home_zone or "",  # our own zone, highlighted in the UI
         "alerts": alerts or [],
         "rows": rows,
     }

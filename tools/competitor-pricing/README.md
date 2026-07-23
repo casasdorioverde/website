@@ -45,6 +45,30 @@ for the scarcity language Booking shows on the page itself ("Sold out",
 Airbnb provider path can report a real `occupancy_pct` if your chosen vendor
 supplies one.
 
+## Zones (grouping competitors by area)
+
+Every property is tagged with a Madeira **zone** so the report and dashboard
+can group like-for-like and highlight the competitors that actually share your
+market. There are five canonical zones, ordered west → east:
+
+| Zone key      | Label            | Covers                                            |
+| ------------- | ---------------- | ------------------------------------------------- |
+| `southwest`   | South-West       | Ponta do Sol, Calheta, Ribeira Brava — **home**   |
+| `south`       | South / Funchal  | Funchal, Câmara de Lobos                           |
+| `southeast`   | South-East       | Santa Cruz, Machico, Caniço, airport              |
+| `north`       | North            | São Vicente, Santana, Porto Moniz, Porto da Cruz  |
+| `porto-santo` | Porto Santo      | Porto Santo island                                |
+
+You don't have to remember the exact keys. The `region:` field on each
+competitor (and `us.zone`) is normalised by `competitor_pricing/zones.py`, so
+a compass point (`SW`), a zone name (`southwest`), or just a town (`Calheta`,
+`Machico`) all resolve to the right zone — accents and case are ignored. An
+unrecognised value is grouped under **Other / unmapped** and logged as a
+warning so you can spot the typo. `us.zone` marks your **home zone**, which the
+dashboard highlights and compares against directly.
+
+Run the zone tests with `python tests/test_zones.py` (or `pytest tests/`).
+
 ## Setup
 
 ```bash

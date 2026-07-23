@@ -1,10 +1,15 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
 
 import yaml
+
+from .zones import UNKNOWN_ZONE, home_zone, normalize_region, resolve_zone
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -15,6 +20,9 @@ class UsConfig:
     rooms: Optional[int] = None
     has_pool: Optional[bool] = None
     booking_url: Optional[str] = None  # our own listing, scraped for parity
+    # Which Madeira zone we sit in. Drives the "home zone" highlight and the
+    # like-for-like comparison against competitors in the same area.
+    zone: str = "southwest"
 
 
 @dataclass
@@ -99,6 +107,7 @@ def load_config(path: str | Path) -> Config:
         rooms=us_raw.get("rooms"),
         has_pool=us_raw.get("has_pool"),
         booking_url=us_raw.get("booking_url"),
+        zone=home_zone(us_raw.get("zone")).label,
     )
 
     competitors_raw = raw.get("competitors", [])
@@ -109,6 +118,16 @@ def load_config(path: str | Path) -> Config:
             raise ValueError(
                 f"Competitor '{name}' needs a booking_url and/or airbnb_listing_id"
             )
+        raw_region = c.get("region")
+        zone = resolve_zone(raw_region)
+        if zone is UNKNOWN_ZONE:
+            logger.warning(
+                "Competitor '%s' has region %r that doesn't match any Madeira "
+                "zone; grouping it under '%s'. See zones.py for accepted values.",
+                name,
+                raw_region,
+                UNKNOWN_ZONE.label,
+            )
         competitors.append(
             CompetitorConfig(
                 name=name,
@@ -116,7 +135,7 @@ def load_config(path: str | Path) -> Config:
                 airbnb_listing_id=c.get("airbnb_listing_id"),
                 rooms=c.get("rooms"),
                 has_pool=c.get("has_pool"),
-                region=c.get("region"),
+                region=normalize_region(raw_region),
             )
         )
 
